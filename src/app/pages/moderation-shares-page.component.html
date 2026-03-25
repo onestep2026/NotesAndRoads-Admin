@@ -1,0 +1,69 @@
+<section class="panel">
+  <div class="panel-head">
+    <h2>Moderation Shares</h2>
+    <div class="toolbar">
+      <select [(ngModel)]="selectedStatus">
+        @for (status of statusOptions; track status) {
+          <option [ngValue]="status">{{ status || 'ALL' }}</option>
+        }
+      </select>
+      <button type="button" (click)="reload()">Filter</button>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (success) {
+    <p class="success">{{ success }}</p>
+  }
+
+  <div class="approve-box">
+    <input [(ngModel)]="reviewNote" placeholder="Admin review note (optional)" />
+  </div>
+
+  @if (loading) {
+    <p>Loading moderation shares...</p>
+  } @else {
+    <p class="meta">Total: {{ total }}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Share ID</th>
+          <th>Status</th>
+          <th>Content</th>
+          <th>Owner</th>
+          <th>Risk</th>
+          <th>Label</th>
+          <th>Message</th>
+          <th>Moderated At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of items; track item.id) {
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.contentType }}#{{ item.contentId }}</td>
+            <td>{{ item.ownerUserId || '-' }}</td>
+            <td>{{ item.moderationRiskLevel || '-' }}</td>
+            <td>{{ item.moderationLabel || '-' }}</td>
+            <td>{{ item.moderationMessage || '-' }}</td>
+            <td>{{ item.moderatedAt || '-' }}</td>
+            <td>
+              @if (canReview(item)) {
+                <div class="actions">
+                  <button type="button" [disabled]="submitting" (click)="approve(item.id)">Approve</button>
+                  <button type="button" class="danger" [disabled]="submitting" (click)="reject(item.id)">Reject</button>
+                </div>
+              } @else {
+                <span>-</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

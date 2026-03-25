@@ -1,0 +1,27 @@
+<section class="login-card">
+  <h1>知行 Admin Login</h1>
+  <p>Sign in with your account to access Notes And Roads governance console.</p>
+
+  <label>
+    <span>Backend Base URL</span>
+    <input [(ngModel)]="baseUrl" placeholder="http://106.15.42.189" />
+  </label>
+
+  <label>
+    <span>Email</span>
+    <input [(ngModel)]="email" placeholder="admin@example.com" />
+  </label>
+
+  <label>
+    <span>Password</span>
+    <input [(ngModel)]="password" type="password" placeholder="password" />
+  </label>
+
+  <button type="button" (click)="login()" [disabled]="loggingIn">
+    {{ loggingIn ? "Logging in..." : "Login" }}
+  </button>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+</section>

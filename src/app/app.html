@@ -1,0 +1,27 @@
+@if (isLoginRoute()) {
+  <main class="auth-main">
+    <router-outlet></router-outlet>
+  </main>
+} @else {
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <h1>知行 Admin</h1>
+        <p>知行 UGC Governance Console</p>
+      </div>
+      <nav class="nav-links">
+        <a routerLink="/feedback">Feedback</a>
+        <a routerLink="/reports">Reports</a>
+        <a routerLink="/moderation-shares">Moderation Shares</a>
+        <a routerLink="/enforcements">Enforcements</a>
+        <a routerLink="/book-submissions">Book Submissions</a>
+      </nav>
+    </header>
+
+    <app-admin-settings></app-admin-settings>
+
+    <main class="app-main">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+}

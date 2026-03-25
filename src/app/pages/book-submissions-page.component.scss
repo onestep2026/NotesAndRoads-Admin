@@ -1,0 +1,152 @@
+.panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.panel-head h2 {
+  margin: 0;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.rebuild-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.rebuild-bar input {
+  min-width: 180px;
+}
+
+select,
+button,
+input {
+  height: 36px;
+  border-radius: 8px;
+}
+
+select,
+input {
+  border: 1px solid #d1d5db;
+  padding: 0 8px;
+}
+
+button {
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+button.danger {
+  background: #dc2626;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  padding: 9px 8px;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+td input {
+  width: 100%;
+}
+
+.author-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.author-review-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.author-name {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.author-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.author-choice-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.author-new-label {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.author-alias {
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.error-inline {
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+.action-cell {
+  min-width: 320px;
+}
+
+.action-cell input {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.action-cell button {
+  margin-right: 6px;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.success {
+  color: #047857;
+}
+
+.meta {
+  color: #6b7280;
+  margin: 4px 0 10px;
+}

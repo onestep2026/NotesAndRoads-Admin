@@ -1,0 +1,63 @@
+<section class="panel">
+  <div class="panel-head">
+    <h2>Enforcements</h2>
+    <div class="toolbar">
+      <input [(ngModel)]="targetUserIdInput" placeholder="targetUserId" />
+      <select [(ngModel)]="selectedStatus">
+        @for (status of statusOptions; track status) {
+          <option [ngValue]="status">{{ status || 'ALL' }}</option>
+        }
+      </select>
+      <button type="button" (click)="reload()">Filter</button>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (success) {
+    <p class="success">{{ success }}</p>
+  }
+
+  <div class="lift-box">
+    <input [(ngModel)]="liftReason" placeholder="Lift reason (optional)" />
+  </div>
+
+  @if (loading) {
+    <p>Loading enforcements...</p>
+  } @else {
+    <p class="meta">Total: {{ total }}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Target User</th>
+          <th>Reason</th>
+          <th>Effective</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of items; track item.id) {
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.targetUserId }}</td>
+            <td>{{ item.reasonCode }}</td>
+            <td>{{ item.effectiveFrom }} ~ {{ item.effectiveUntil || 'N/A' }}</td>
+            <td>
+              @if (item.status === 'ACTIVE') {
+                <button type="button" [disabled]="submitting" (click)="lift(item.id)">Lift</button>
+              } @else {
+                <span>-</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

@@ -1,0 +1,97 @@
+<a class="back" routerLink="/reports">← Back to reports</a>
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+@if (success) {
+  <p class="success">{{ success }}</p>
+}
+
+@if (loading) {
+  <p>Loading report...</p>
+} @else if (report) {
+  <div class="grid">
+    <section class="panel">
+      <h2>Report Detail #{{ report.id }}</h2>
+      <ul>
+        <li><strong>Status:</strong> {{ report.status }}</li>
+        <li><strong>Target:</strong> {{ report.targetContentType }}#{{ report.targetContentId }}</li>
+        <li><strong>Target User:</strong> {{ report.targetUserId }}</li>
+        <li><strong>Reporter:</strong> {{ report.reporterUserId }}</li>
+        <li><strong>Reason:</strong> {{ report.reasonCode }}</li>
+        <li><strong>Reason Detail:</strong> {{ report.reasonText || '-' }}</li>
+      </ul>
+
+      <h3>Review Action</h3>
+      <label>
+        <span>Status</span>
+        <select [(ngModel)]="reportStatus">
+          <option value="IN_REVIEW">IN_REVIEW</option>
+          <option value="RESOLVED_REJECTED">RESOLVED_REJECTED</option>
+          <option value="RESOLVED_CONFIRMED">RESOLVED_CONFIRMED</option>
+        </select>
+      </label>
+      <label>
+        <span>Review Note</span>
+        <textarea [(ngModel)]="reviewNote" rows="3"></textarea>
+      </label>
+      <button type="button" [disabled]="saving" (click)="saveReportStatus()">Save Status</button>
+    </section>
+
+    <section class="panel">
+      <h2>User Enforcement</h2>
+      <p>Target user: <strong>{{ report.targetUserId }}</strong></p>
+      <label>
+        <span>Type</span>
+        <select [(ngModel)]="enforcementType">
+          <option value="SHARE_BANNED">SHARE_BANNED</option>
+          <option value="LOGIN_BANNED">LOGIN_BANNED</option>
+          <option value="PERMANENT_BANNED">PERMANENT_BANNED</option>
+        </select>
+      </label>
+      <label>
+        <span>Reason Code</span>
+        <select [(ngModel)]="enforcementReasonCode">
+          <option value="POLICY_VIOLATION">POLICY_VIOLATION</option>
+          <option value="REPEAT_OFFENSE">REPEAT_OFFENSE</option>
+          <option value="MALICIOUS_BEHAVIOR">MALICIOUS_BEHAVIOR</option>
+          <option value="OTHER">OTHER</option>
+        </select>
+      </label>
+      <label>
+        <span>Reason Detail</span>
+        <textarea [(ngModel)]="enforcementReasonText" rows="3"></textarea>
+      </label>
+      <label>
+        <span>Effective From</span>
+        <input [(ngModel)]="effectiveFrom" type="datetime-local" />
+      </label>
+      <label>
+        <span>Effective Until</span>
+        <input [(ngModel)]="effectiveUntil" type="datetime-local" [required]="requiresEffectiveUntil()" />
+      </label>
+      <button type="button" [disabled]="saving" (click)="applyEnforcement()">Apply Enforcement</button>
+
+      @if (latestEnforcement) {
+        <div class="result">
+          <p><strong>Applied:</strong> {{ latestEnforcement.type }} ({{ latestEnforcement.status }})</p>
+          <p><strong>Effective:</strong> {{ latestEnforcement.effectiveFrom }} ~ {{ latestEnforcement.effectiveUntil || 'N/A' }}</p>
+        </div>
+      }
+    </section>
+
+    <section class="panel">
+      <h2>Content Governance</h2>
+      <p>Target content: <strong>{{ report.targetContentType }}#{{ report.targetContentId }}</strong></p>
+      <label>
+        <span>Action Reason</span>
+        <textarea [(ngModel)]="contentActionReason" rows="3" placeholder="Optional reason for audit trail"></textarea>
+      </label>
+      <div class="action-row">
+        <button type="button" [disabled]="saving" (click)="takeDownTargetContent()">Take Down</button>
+        <button type="button" [disabled]="saving" (click)="restoreTargetContent()">Restore</button>
+        <button type="button" class="danger" [disabled]="saving" (click)="deleteTargetContent()">Delete Content</button>
+      </div>
+    </section>
+  </div>
+}

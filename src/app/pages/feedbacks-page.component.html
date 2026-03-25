@@ -1,0 +1,51 @@
+<section class="panel">
+  <div class="panel-head">
+    <h2>Feedback Inbox</h2>
+    <div class="toolbar">
+      <select [(ngModel)]="selectedStatus" (change)="reload()">
+        @for (status of statusOptions; track status) {
+          <option [ngValue]="status">{{ status || 'ALL' }}</option>
+        }
+      </select>
+      <button type="button" (click)="reload()">Refresh</button>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (loading) {
+    <p>Loading feedback...</p>
+  } @else {
+    <p class="meta">Total: {{ total }}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Status</th>
+          <th>Category</th>
+          <th>User</th>
+          <th>Follow Up</th>
+          <th>Contact Email</th>
+          <th>Preview</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of feedbackItems; track item.id) {
+          <tr [routerLink]="['/feedback', item.id]">
+            <td>{{ item.id }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.userId }}</td>
+            <td>{{ item.allowFollowUp ? 'YES' : 'NO' }}</td>
+            <td>{{ item.contactEmail || '-' }}</td>
+            <td>{{ preview(item.content) }}</td>
+            <td>{{ item.createdAt || '-' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

@@ -1,0 +1,49 @@
+<a class="back" routerLink="/feedback">← Back to feedback</a>
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+@if (success) {
+  <p class="success">{{ success }}</p>
+}
+
+@if (loading) {
+  <p>Loading feedback...</p>
+} @else if (feedback) {
+  <div class="grid">
+    <section class="panel">
+      <h2>Feedback Detail #{{ feedback.id }}</h2>
+      <ul>
+        <li><strong>Status:</strong> {{ feedback.status }}</li>
+        <li><strong>Category:</strong> {{ feedback.category }}</li>
+        <li><strong>User:</strong> {{ feedback.userId }}</li>
+        <li><strong>Follow Up Allowed:</strong> {{ feedback.allowFollowUp ? 'YES' : 'NO' }}</li>
+        <li><strong>Contact Email:</strong> {{ feedback.contactEmail || '-' }}</li>
+        <li><strong>Created:</strong> {{ feedback.createdAt || '-' }}</li>
+        <li><strong>Reviewed By:</strong> {{ feedback.reviewedBy || '-' }}</li>
+        <li><strong>Reviewed At:</strong> {{ feedback.reviewedAt || '-' }}</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Feedback Content</h2>
+      <div class="content">{{ feedback.content }}</div>
+    </section>
+
+    <section class="panel">
+      <h2>Review Action</h2>
+      <label>
+        <span>Status</span>
+        <select [(ngModel)]="feedbackStatus">
+          <option value="IN_REVIEW">IN_REVIEW</option>
+          <option value="CLOSED">CLOSED</option>
+        </select>
+      </label>
+      <label>
+        <span>Review Note</span>
+        <textarea [(ngModel)]="reviewNote" rows="5"></textarea>
+      </label>
+      <button type="button" [disabled]="saving" (click)="saveStatus()">Save Status</button>
+    </section>
+  </div>
+}

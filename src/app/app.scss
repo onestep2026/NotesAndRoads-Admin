@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: #111827;
+  color: #f9fafb;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.app-header p {
+  margin: 4px 0 0;
+  color: #d1d5db;
+}
+
+.app-header a {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-links {
+  display: flex;
+  gap: 14px;
+}
+
+.app-main {
+  padding: 20px 24px 28px;
+}
+
+.auth-main {
+  min-height: 100vh;
+  background: #f5f7fb;
+  padding: 20px;
+}

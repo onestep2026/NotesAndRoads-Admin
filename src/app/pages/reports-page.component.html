@@ -1,0 +1,47 @@
+<section class="panel">
+  <div class="panel-head">
+    <h2>Report Queue</h2>
+    <div class="toolbar">
+      <select [(ngModel)]="selectedStatus" (change)="reload()">
+        @for (status of statusOptions; track status) {
+          <option [ngValue]="status">{{ status || 'ALL' }}</option>
+        }
+      </select>
+      <button type="button" (click)="reload()">Refresh</button>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (loading) {
+    <p>Loading reports...</p>
+  } @else {
+    <p class="meta">Total: {{ total }}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Status</th>
+          <th>Target</th>
+          <th>Reason</th>
+          <th>Reporter</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (report of reports; track report.id) {
+          <tr [routerLink]="['/reports', report.id]">
+            <td>{{ report.id }}</td>
+            <td>{{ report.status }}</td>
+            <td>{{ report.targetContentType }}#{{ report.targetContentId }}</td>
+            <td>{{ report.reasonCode }}</td>
+            <td>{{ report.reporterUserId }}</td>
+            <td>{{ report.createdAt || '-' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>
