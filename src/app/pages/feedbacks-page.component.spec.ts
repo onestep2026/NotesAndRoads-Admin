@@ -40,8 +40,9 @@ describe('FeedbacksPageComponent', () => {
     const comp = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(mockApi['listFeedback']).toHaveBeenCalledWith('', 0, 20);
-    expect(comp.feedbackItems).toEqual([sampleFeedback]);
+    expect(mockApi['listFeedback']).toHaveBeenCalledWith('OPEN', 0, 20);
+    expect(comp.feedbacks).toEqual([sampleFeedback]);
+    expect(comp.selectedFeedback).toEqual(sampleFeedback);
     expect(comp.total).toBe(1);
     expect(comp.loading).toBe(false);
   });
@@ -52,7 +53,8 @@ describe('FeedbacksPageComponent', () => {
     const comp = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(comp.feedbackItems).toEqual([]);
+    expect(comp.feedbacks).toEqual([]);
+    expect(comp.selectedFeedback).toBeNull();
     expect(comp.total).toBe(0);
   });
 
@@ -76,22 +78,31 @@ describe('FeedbacksPageComponent', () => {
     fixture.detectChanges();
 
     expect(comp.error).toBeTruthy();
-    expect(comp.feedbackItems).toEqual([]);
+    expect(comp.feedbacks).toEqual([]);
   });
 
-  it('preview() returns content unchanged when under 80 characters', () => {
+  it('selectFeedback() should set selected feedback and hydrate review note', () => {
     const fixture = TestBed.createComponent(FeedbacksPageComponent);
     const comp = fixture.componentInstance;
-    const short = 'short content';
-    expect(comp.preview(short)).toBe(short);
+    const reviewNote = 'Already reviewed';
+    const feedback = { ...sampleFeedback, reviewNote };
+
+    comp.selectFeedback(feedback);
+
+    expect(comp.selectedFeedback).toEqual(feedback);
+    expect(comp.reviewNote).toBe(reviewNote);
   });
 
-  it('preview() truncates content over 80 characters with ellipsis', () => {
+  it('reload() should keep current selection when item still exists', () => {
+    const secondFeedback = { ...sampleFeedback, id: '2', content: 'Follow-up' };
+    mockApi['listFeedback'].mockReturnValue(of(pageOf([sampleFeedback, secondFeedback])));
     const fixture = TestBed.createComponent(FeedbacksPageComponent);
     const comp = fixture.componentInstance;
-    const long = 'a'.repeat(100);
-    const result = comp.preview(long);
-    expect(result).toHaveLength(83);
-    expect(result.endsWith('...')).toBe(true);
+    fixture.detectChanges();
+
+    comp.selectFeedback(secondFeedback);
+    comp.reload();
+
+    expect(comp.selectedFeedback?.id).toBe('2');
   });
 });

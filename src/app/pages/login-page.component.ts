@@ -17,7 +17,7 @@ export class LoginPageComponent {
   baseUrl = '';
   email = '';
   password = '';
-  loggingIn = false;
+  loading = false;
   error = '';
 
   constructor(
@@ -28,7 +28,7 @@ export class LoginPageComponent {
   ) {
     this.baseUrl = this.config.baseUrl();
     if (this.config.token()) {
-      void this.router.navigateByUrl('/reports');
+      void this.router.navigateByUrl(this.config.preferredRoute());
     }
   }
 
@@ -39,7 +39,7 @@ export class LoginPageComponent {
       return;
     }
 
-    this.loggingIn = true;
+    this.loading = true;
     this.error = '';
     this.config.setBaseUrl(normalizedBaseUrl);
 
@@ -51,7 +51,7 @@ export class LoginPageComponent {
       .pipe(
         timeout(15000),
         finalize(() => {
-          this.loggingIn = false;
+          this.loading = false;
           this.cdr.detectChanges();
         })
       )
@@ -63,11 +63,12 @@ export class LoginPageComponent {
             return;
           }
           this.config.setToken(token);
-          void this.router.navigateByUrl('/reports');
+          this.config.setEmail(this.email.trim());
+          void this.router.navigateByUrl(this.config.preferredRoute());
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.error = err?.error?.message || err?.message || 'Login failed.';
+          this.error = err?.error?.message || err?.message || 'Login failed. Please check your credentials.';
           this.cdr.detectChanges();
         }
       });

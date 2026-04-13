@@ -17,8 +17,6 @@ const pendingShare: ModerationShareResp = {
   id: '1', ownerUserId: 10, contentType: 'QUOTE', contentId: 100,
   visibility: 'PUBLIC', status: 'PENDING', createdAt: '2026-01-01T00:00:00'
 };
-const approvedShare: ModerationShareResp = { ...pendingShare, id: '2', status: 'APPROVED' };
-const rejectedShare: ModerationShareResp = { ...pendingShare, id: '3', status: 'REJECTED' };
 
 describe('ModerationSharesPageComponent', () => {
   let mockApi: Record<string, ReturnType<typeof vi.fn>>;
@@ -59,13 +57,13 @@ describe('ModerationSharesPageComponent', () => {
     expect(fixture.componentInstance.total).toBe(0);
   });
 
-  it('canReview() returns true only for PENDING items', () => {
+  it('should select the first moderation share on init', () => {
     const fixture = TestBed.createComponent(ModerationSharesPageComponent);
     const comp = fixture.componentInstance;
+    fixture.detectChanges();
 
-    expect(comp.canReview(pendingShare)).toBe(true);
-    expect(comp.canReview(approvedShare)).toBe(false);
-    expect(comp.canReview(rejectedShare)).toBe(false);
+    expect(comp.selectedItem).toEqual(pendingShare);
+    expect(comp.reviewNote).toBe('');
   });
 
   it('approve() calls approveModerationShare and shows success message', () => {
@@ -77,11 +75,12 @@ describe('ModerationSharesPageComponent', () => {
     // triggering nested cdr.detectChanges() that Angular 21 disallows outside
     // an update cycle.
     const reloadSpy = vi.spyOn(comp, 'reload').mockImplementation(() => {});
+    comp.selectItem(pendingShare);
 
-    comp.approve('1');
+    comp.approve();
 
     expect(mockApi['approveModerationShare']).toHaveBeenCalledWith('1', '');
-    expect(comp.success).toContain('1');
+    expect(comp.success).toBe('Share approved.');
     expect(comp.error).toBe('');
     expect(reloadSpy).toHaveBeenCalled();
   });
@@ -92,11 +91,12 @@ describe('ModerationSharesPageComponent', () => {
     const fixture = TestBed.createComponent(ModerationSharesPageComponent);
     const comp = fixture.componentInstance;
     const reloadSpy = vi.spyOn(comp, 'reload').mockImplementation(() => {});
+    comp.selectItem(pendingShare);
 
-    comp.reject('1');
+    comp.reject();
 
     expect(mockApi['rejectModerationShare']).toHaveBeenCalledWith('1', '');
-    expect(comp.success).toContain('1');
+    expect(comp.success).toBe('Share rejected.');
     expect(comp.error).toBe('');
     expect(reloadSpy).toHaveBeenCalled();
   });
@@ -120,8 +120,9 @@ describe('ModerationSharesPageComponent', () => {
     const fixture = TestBed.createComponent(ModerationSharesPageComponent);
     const comp = fixture.componentInstance;
     fixture.detectChanges();
+    comp.selectItem(pendingShare);
 
-    comp.approve('1');
+    comp.approve();
     fixture.detectChanges();
 
     expect(comp.error).toBe('Server error');

@@ -1,27 +1,36 @@
 @if (isLoginRoute()) {
-  <main class="auth-main">
+  <main class="login-shell">
     <router-outlet></router-outlet>
   </main>
 } @else {
-  <div class="app-shell">
-    <header class="app-header">
-      <div>
+  <div class="app-shell-v2">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
         <h1>知行 Admin</h1>
-        <p>知行 UGC Governance Console</p>
+        <p>Moderation Console</p>
       </div>
-      <nav class="nav-links">
-        <a routerLink="/feedback">Feedback</a>
-        <a routerLink="/reports">Reports</a>
-        <a routerLink="/moderation-shares">Moderation Shares</a>
-        <a routerLink="/enforcements">Enforcements</a>
-        <a routerLink="/book-submissions">Book Submissions</a>
+
+      <nav class="sidebar-nav">
+        @for (item of navItems(); track item.path) {
+          <a [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+        }
       </nav>
-    </header>
 
-    <app-admin-settings></app-admin-settings>
+      <p class="sidebar-footer">OneStep 2026</p>
+    </aside>
 
-    <main class="app-main">
-      <router-outlet></router-outlet>
+    <main class="app-main-v2">
+      <header class="app-topbar">
+        <div>
+          <h2>Admin Review Workspace</h2>
+          <p>Fast, focused and auditable moderation workflow</p>
+        </div>
+        <app-admin-settings></app-admin-settings>
+      </header>
+
+      <section class="app-content-v2">
+        <router-outlet></router-outlet>
+      </section>
     </main>
   </div>
 }

@@ -1,0 +1,142 @@
+<div class="review-page">
+  <header class="review-page-header">
+    <div>
+      <h2>Admin Users</h2>
+      <p class="admin-muted">Create and manage operator accounts. This area is restricted to super admins.</p>
+    </div>
+    <button class="admin-button" (click)="reload()" [disabled]="loading">
+      {{ loading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </header>
+
+  @if (error) {
+    <div class="admin-alert error">{{ error }}</div>
+  }
+  @if (success) {
+    <div class="admin-alert success">{{ success }}</div>
+  }
+  @if (revealedPassword) {
+    <div class="admin-alert success password-alert">
+      <strong>{{ revealedPasswordLabel }}</strong>
+      <code>{{ revealedPassword }}</code>
+      <span>Copy it now. It will not be shown again.</span>
+    </div>
+  }
+
+  <section class="review-split operator-layout">
+    <aside class="review-detail create-panel">
+      <section class="detail-block">
+        <h3>Create Operator</h3>
+
+        <label class="detail-label">Email</label>
+        <input class="admin-input" [(ngModel)]="createForm.email" type="email" placeholder="operator@example.com" />
+
+        <label class="detail-label">Display Name</label>
+        <input class="admin-input" [(ngModel)]="createForm.displayName" type="text" placeholder="Optional display name" />
+
+        <div class="operator-grid">
+          <label>
+            <span class="admin-muted">Home Region</span>
+            <select class="admin-select" [(ngModel)]="createForm.homeRegion">
+              <option value="CN">CN</option>
+              <option value="US">US</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="admin-muted">Temporary Password</span>
+            <input class="admin-input" [(ngModel)]="createForm.temporaryPassword" type="text" placeholder="Leave blank to auto-generate" />
+          </label>
+        </div>
+
+        <div class="role-group">
+          <span class="detail-label">Initial Roles</span>
+          @for (role of roleOptions; track role) {
+            <label class="role-checkbox">
+              <input
+                type="checkbox"
+                [checked]="isRoleChecked(createForm.roles, role)"
+                (change)="toggleCreateRole(role, $any($event.target).checked)"
+              />
+              <span>{{ role }}</span>
+            </label>
+          }
+        </div>
+
+        <button class="admin-button primary" (click)="createOperator()" [disabled]="submitting">
+          {{ submitting ? 'Creating...' : 'Create Operator' }}
+        </button>
+      </section>
+    </aside>
+
+    <main class="review-list operator-list">
+      @if (loading) {
+        <div class="admin-empty">Loading operators...</div>
+      } @else if (operators.length === 0) {
+        <div class="admin-empty">No operator accounts yet.</div>
+      } @else {
+        @for (operator of operators; track operator.id) {
+          <button class="review-list-item" [class.selected]="selectedOperator?.id === operator.id" (click)="selectOperator(operator)">
+            <div class="row">
+              <strong>{{ operator.displayName }}</strong>
+              <span class="admin-badge" [ngClass]="{ approved: operator.status === 'ACTIVE', rejected: operator.status === 'DISABLED' }">
+                {{ operator.status }}
+              </span>
+            </div>
+            <p class="title">{{ operator.email }}</p>
+            <p class="excerpt">{{ operator.roles.join(', ') || 'No active roles' }}</p>
+            <p class="admin-muted">{{ operator.homeRegion }} · {{ operator.createdAt | date:'short' }}</p>
+          </button>
+        }
+      }
+    </main>
+
+    <aside class="review-detail">
+      @if (!selectedOperator) {
+        <div class="admin-empty">Select one operator to manage roles and credentials.</div>
+      } @else {
+        <section class="detail-block">
+          <div class="detail-meta-grid">
+            <p><span>ID</span>#{{ selectedOperator.id }}</p>
+            <p><span>Status</span>{{ selectedOperator.status }}</p>
+            <p><span>Email</span>{{ selectedOperator.email }}</p>
+            <p><span>Region</span>{{ selectedOperator.homeRegion }}</p>
+            <p><span>Verified</span>{{ selectedOperator.emailVerified ? 'Yes' : 'No' }}</p>
+            <p><span>Created</span>{{ selectedOperator.createdAt | date:'medium' }}</p>
+          </div>
+
+          <div class="role-group">
+            <span class="detail-label">Roles</span>
+            @for (role of roleOptions; track role) {
+              <label class="role-checkbox">
+                <input
+                  type="checkbox"
+                  [checked]="isRoleChecked(selectedRoles, role)"
+                  [disabled]="selectedOperator.status === 'DISABLED'"
+                  (change)="toggleSelectedRole(role, $any($event.target).checked)"
+                />
+                <span>{{ role }}</span>
+              </label>
+            }
+          </div>
+
+          <div class="detail-actions">
+            <button class="admin-button primary" (click)="saveRoles()" [disabled]="submitting || selectedOperator.status === 'DISABLED'">
+              Save Roles
+            </button>
+            <button class="admin-button" (click)="resetPassword()" [disabled]="submitting">
+              Reset Password
+            </button>
+            <button class="admin-button ghost-danger" (click)="disableOperator()" [disabled]="submitting || selectedOperator.status === 'DISABLED'">
+              Disable Account
+            </button>
+          </div>
+
+          @if (selectedOperator.disabledAt) {
+            <p class="admin-muted">Disabled at {{ selectedOperator.disabledAt | date:'medium' }}</p>
+          }
+        </section>
+      }
+    </aside>
+  </section>
+</div>

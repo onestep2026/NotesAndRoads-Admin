@@ -7,13 +7,25 @@ import { LoginPageComponent } from './login-page.component';
 import { vi } from 'vitest';
 
 describe('LoginPageComponent', () => {
+  function jwtWithRoles(roles: string[]): string {
+    const base64Url = (value: string) =>
+      btoa(value).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    return [
+      base64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' })),
+      base64Url(JSON.stringify({ roles })),
+      'signature'
+    ].join('.');
+  }
+
   let httpMock: HttpTestingController;
   let router: Router;
   let mockConfig: {
     baseUrl: () => string;
     token: () => string;
+    preferredRoute: () => string;
     setBaseUrl: ReturnType<typeof vi.fn>;
     setToken: ReturnType<typeof vi.fn>;
+    setEmail: ReturnType<typeof vi.fn>;
     clearToken: ReturnType<typeof vi.fn>;
   };
 
@@ -21,8 +33,10 @@ describe('LoginPageComponent', () => {
     mockConfig = {
       baseUrl: () => 'http://localhost:9999',
       token: () => '',
+      preferredRoute: () => '/feedback',
       setBaseUrl: vi.fn(),
       setToken: vi.fn(),
+      setEmail: vi.fn(),
       clearToken: vi.fn()
     };
 
@@ -50,9 +64,10 @@ describe('LoginPageComponent', () => {
 
   it('should redirect to /reports when already logged in', () => {
     mockConfig.token = () => 'existing-token';
+    mockConfig.preferredRoute = () => '/book-submissions';
     const navigateSpy = vi.spyOn(router, 'navigateByUrl');
     TestBed.createComponent(LoginPageComponent);
-    expect(navigateSpy).toHaveBeenCalledWith('/reports');
+    expect(navigateSpy).toHaveBeenCalledWith('/book-submissions');
   });
 
   it('should set error without calling API when fields are empty', () => {
@@ -78,10 +93,11 @@ describe('LoginPageComponent', () => {
     const req = httpMock.expectOne('http://localhost:9999/api/v1/auth/login');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ email: 'admin@test.com', password: 'secret' });
-    req.flush({ accessToken: 'jwt-token' });
+    req.flush({ accessToken: jwtWithRoles(['GOVERNANCE_ADMIN']) });
 
-    expect(mockConfig.setToken).toHaveBeenCalledWith('jwt-token');
-    expect(navigateSpy).toHaveBeenCalledWith('/reports');
+    expect(mockConfig.setToken).toHaveBeenCalledWith(jwtWithRoles(['GOVERNANCE_ADMIN']));
+    expect(mockConfig.setEmail).toHaveBeenCalledWith('admin@test.com');
+    expect(navigateSpy).toHaveBeenCalledWith('/feedback');
     expect(comp.error).toBe('');
   });
 

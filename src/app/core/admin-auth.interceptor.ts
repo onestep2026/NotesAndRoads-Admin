@@ -13,6 +13,8 @@ export const adminAuthInterceptor: HttpInterceptorFn = (req, next) => {
       if (err instanceof HttpErrorResponse && err.status === 401) {
         config.clearToken();
         void router.navigateByUrl('/login');
+      } else if (err instanceof HttpErrorResponse && err.status === 403) {
+        void router.navigateByUrl('/unauthorized');
       }
       return throwError(() => err);
     })

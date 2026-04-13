@@ -42,7 +42,7 @@ describe('EnforcementsPageComponent', () => {
     const comp = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(mockApi['listEnforcements']).toHaveBeenCalledWith('', null, 0, 20);
+    expect(mockApi['listEnforcements']).toHaveBeenCalledWith('ACTIVE', null, 0, 20);
     expect(comp.items).toEqual([activeEnforcement]);
     expect(comp.total).toBe(1);
     expect(comp.loading).toBe(false);
@@ -64,18 +64,19 @@ describe('EnforcementsPageComponent', () => {
     fixture.detectChanges();
 
     comp.selectedStatus = 'ACTIVE';
-    comp.targetUserIdInput = '42';
+    comp.targetUserId = 42;
     comp.reload();
 
     expect(mockApi['listEnforcements']).toHaveBeenCalledWith('ACTIVE', 42, 0, 20);
   });
 
-  it('should ignore invalid targetUserId input', () => {
+  it('should treat null targetUserId as unfiltered', () => {
     const fixture = TestBed.createComponent(EnforcementsPageComponent);
     const comp = fixture.componentInstance;
     fixture.detectChanges();
 
-    comp.targetUserIdInput = 'not-a-number';
+    comp.selectedStatus = '';
+    comp.targetUserId = null;
     comp.reload();
 
     expect(mockApi['listEnforcements']).toHaveBeenCalledWith('', null, 0, 20);
@@ -90,12 +91,12 @@ describe('EnforcementsPageComponent', () => {
     // Spy on reload after initial construction to avoid nested cdr.detectChanges()
     // calls that Angular 21 disallows outside an update cycle.
     const reloadSpy = vi.spyOn(comp, 'reload').mockImplementation(() => {});
+    vi.spyOn(window, 'prompt').mockReturnValue('Served duration');
 
-    comp.liftReason = 'Served duration';
-    comp.lift('E1');
+    comp.lift(activeEnforcement);
 
     expect(mockApi['liftEnforcement']).toHaveBeenCalledWith('E1', 'Served duration');
-    expect(comp.success).toContain('E1');
+    expect(comp.success).toBe('Enforcement lifted.');
     expect(comp.error).toBe('');
     expect(reloadSpy).toHaveBeenCalled();
   });
@@ -108,8 +109,9 @@ describe('EnforcementsPageComponent', () => {
     const fixture = TestBed.createComponent(EnforcementsPageComponent);
     const comp = fixture.componentInstance;
     fixture.detectChanges();
+    vi.spyOn(window, 'prompt').mockReturnValue('Served duration');
 
-    comp.lift('E1');
+    comp.lift(activeEnforcement);
     fixture.detectChanges();
 
     expect(comp.error).toBe('Enforcement not found');

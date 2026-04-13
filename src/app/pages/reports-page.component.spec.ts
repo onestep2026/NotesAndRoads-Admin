@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { GovernanceApiService, PageResp, ReportResp } from '../core/governance-api.service';
+import { EnforcementResp, GovernanceApiService, PageResp, ReportResp } from '../core/governance-api.service';
 import { ReportsPageComponent } from './reports-page.component';
 import { vi } from 'vitest';
 
@@ -18,13 +18,19 @@ const sampleReport: ReportResp = {
   targetContentType: 'QUOTE', targetContentId: 500,
   reasonCode: 'SPAM', status: 'OPEN', createdAt: '2026-01-01T00:00:00'
 };
+const userHistory: EnforcementResp = {
+  id: 'E1', targetUserId: 2, type: 'SHARE_BANNED',
+  status: 'ACTIVE', reasonCode: 'POLICY_VIOLATION',
+  effectiveFrom: '2026-01-01T00:00:00', operatorId: 1
+};
 
 describe('ReportsPageComponent', () => {
   let mockApi: Record<string, ReturnType<typeof vi.fn>>;
 
   beforeEach(async () => {
     mockApi = {
-      listReports: vi.fn().mockReturnValue(of(pageOf([sampleReport])))
+      listReports: vi.fn().mockReturnValue(of(pageOf([sampleReport]))),
+      listEnforcements: vi.fn().mockReturnValue(of(pageOf([userHistory])))
     };
 
     await TestBed.configureTestingModule({
@@ -41,8 +47,11 @@ describe('ReportsPageComponent', () => {
     const comp = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(mockApi['listReports']).toHaveBeenCalledWith('', 0, 20);
+    expect(mockApi['listReports']).toHaveBeenCalledWith('OPEN', 0, 20);
+    expect(mockApi['listEnforcements']).toHaveBeenCalledWith('', 2);
     expect(comp.reports).toEqual([sampleReport]);
+    expect(comp.selectedReport).toEqual(sampleReport);
+    expect(comp.targetUserHistory).toEqual([userHistory]);
     expect(comp.total).toBe(1);
     expect(comp.loading).toBe(false);
   });
