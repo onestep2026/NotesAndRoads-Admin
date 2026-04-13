@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "inverse-primary": "#a1d2ad",
+                  "surface-container-lowest": "#ffffff",
+                  "on-tertiary-container": "#f8ba00",
+                  "on-error": "#ffffff",
+                  "on-surface-variant": "#414942",
+                  "secondary-fixed-dim": "#b8ccba",
+                  "secondary-fixed": "#d3e8d5",
+                  "error-container": "#ffdad6",
+                  "on-primary": "#ffffff",
+                  "error": "#ba1a1a",
+                  "tertiary": "#4c3600",
+                  "on-tertiary": "#ffffff",
+                  "on-primary-container": "#9ed0ab",
+                  "on-primary-fixed-variant": "#224f33",
+                  "primary-fixed-dim": "#a1d2ad",
+                  "primary-container": "#2d5a3d",
+                  "on-background": "#1c1c19",
+                  "surface-tint": "#3b684a",
+                  "primary": "#144227",
+                  "surface-container-high": "#ebe8e3",
+                  "inverse-on-surface": "#f3f0eb",
+                  "tertiary-container": "#684c00",
+                  "on-surface": "#1c1c19",
+                  "outline": "#717971",
+                  "on-secondary-container": "#56695a",
+                  "on-primary-fixed": "#00210f",
+                  "tertiary-fixed": "#ffdfa0",
+                  "background": "#fcf9f4",
+                  "on-secondary-fixed": "#0e1f14",
+                  "surface-variant": "#e5e2dd",
+                  "surface-container": "#f0ede9",
+                  "surface-bright": "#fcf9f4",
+                  "primary-fixed": "#bceec8",
+                  "surface": "#fcf9f4",
+                  "outline-variant": "#c1c9c0",
+                  "surface-dim": "#dcdad5",
+                  "on-error-container": "#93000a",
+                  "on-secondary-fixed-variant": "#394b3d",
+                  "on-secondary": "#ffffff",
+                  "secondary": "#516354",
+                  "surface-container-highest": "#e5e2dd",
+                  "on-tertiary-fixed-variant": "#5c4300",
+                  "surface-container-low": "#f6f3ee",
+                  "inverse-surface": "#31302d",
+                  "secondary-container": "#d3e8d5",
+                  "tertiary-fixed-dim": "#fbbc00",
+                  "on-tertiary-fixed": "#261a00"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.125rem",
+                  "lg": "0.25rem",
+                  "xl": "0.5rem",
+                  "full": "0.75rem"
+          },
+          "fontFamily": {
+                  "headline": ["Newsreader"],
+                  "body": ["Inter"],
+                  "label": ["Inter"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f6f3ee;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #c1c9c0;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full flex flex-col bg-[#f6f3ee] dark:bg-stone-900 h-screen w-64 border-r-0 z-50">
+<div class="p-8 flex flex-col gap-1">
+<h1 class="text-xl font-serif italic text-[#144227] dark:text-[#bceec8]">NotesAndRoads</h1>
+<p class="text-xs font-medium text-stone-500 font-label tracking-wide uppercase">Librarian Terminal</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-colors duration-400 ease-[cubic-bezier(0.2,0,0,1)] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="feedback">feedback</span>
+<span class="text-sm">Feedback</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-colors duration-400 ease-[cubic-bezier(0.2,0,0,1)] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="text-sm">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-colors duration-400 ease-[cubic-bezier(0.2,0,0,1)] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="text-sm">Moderation</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#144227] dark:text-[#bceec8] font-bold border-l-4 border-[#144227] dark:border-[#bceec8] bg-[#f0ede9] dark:bg-stone-800 transition-colors duration-400 ease-[cubic-bezier(0.2,0,0,1)]" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="text-sm">Enforcements</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-colors duration-400 ease-[cubic-bezier(0.2,0,0,1)] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="text-sm">Book Catalog</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-colors duration-400 ease-[cubic-bezier(0.2,0,0,1)] rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm">System</span>
+</a>
+</nav>
+<div class="p-4">
+<button class="w-full py-4 bg-primary text-on-primary rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-95 bg-gradient-to-br from-primary to-primary-container">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+<span class="text-sm tracking-tight">New Enforcement</span>
+</button>
+</div>
+<footer class="p-4 border-t border-stone-200 dark:border-stone-800">
+<div class="flex items-center gap-3 px-4 py-2 text-stone-500 text-sm font-medium hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span>Support</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-2 text-stone-500 text-sm font-medium hover:text-error cursor-pointer transition-colors">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Log Out</span>
+</div>
+</footer>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="flex justify-between items-center px-8 h-16 w-full ml-64 bg-[#fcf9f4]/80 dark:bg-stone-950/80 backdrop-blur-xl fixed top-0 right-0 z-40">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg" data-icon="search">search</span>
+<input class="w-full bg-surface-container-highest border-none border-b-2 border-transparent focus:border-primary focus:ring-0 rounded-lg pl-10 pr-4 py-2 text-sm text-on-surface transition-all" placeholder="Search registry by user or reason..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4 items-center">
+<button class="text-stone-600 hover:text-[#2d5a3d] transition-colors duration-400">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-stone-600 hover:text-[#2d5a3d] transition-colors duration-400">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+</div>
+<div class="h-8 w-px bg-stone-200"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface leading-none">Admin User</p>
+<p class="text-[10px] text-stone-500 font-label">Lead Librarian</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-surface-container" data-alt="Close-up portrait of a professional man with glasses in a studious library setting with soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbEvvnqfjx92y9red8CEWJfTSQq4Hil8VWjNh1fh62w0fApfVQ8ZHatOVMvAhde4gsnAcxZ9k6zfzzeGAu8wZ1qTN9Ph9KjareyeufIZqKj5tWIzzUiUBHtdjMu8cpzwzJXEfPXSGCv_L0GqoZCjHXtEHLMZZv1xYyqmIO7HFcVAOBabrCnZ-xeRQlEcBN8IzPGjPj7xdm59W9X56m-JTg0KQwFBkEib6CD3NgXPXncm2BEGnQg7KJ0JebCTqc1VxZ8XXPEV3fOyNy"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-12 pb-12 min-h-screen">
+<!-- Page Header Section -->
+<div class="mb-10 flex justify-between items-end">
+<div>
+<h2 class="font-headline text-4xl font-semibold text-on-surface leading-tight tracking-tight">Registry</h2>
+<p class="text-stone-500 font-body mt-2">Managing active enforcements and community standards across the catalog.</p>
+</div>
+<div class="flex gap-3">
+<div class="bg-surface-container-low px-4 py-2 rounded-xl flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold tracking-widest text-stone-400">Active Bans</span>
+<span class="text-xl font-headline font-bold text-primary">1,284</span>
+</div>
+<div class="h-8 w-px bg-stone-200"></div>
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold tracking-widest text-stone-400">Avg Duration</span>
+<span class="text-xl font-headline font-bold text-primary">14d</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Registry Table -->
+<section class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<div class="p-6 border-b border-surface-container flex items-center justify-between">
+<div class="flex gap-4">
+<button class="text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary pb-1">All Bans</button>
+<button class="text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-stone-600 transition-colors pb-1">Permanent</button>
+<button class="text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-stone-600 transition-colors pb-1">Temporary</button>
+<button class="text-xs font-bold uppercase tracking-widest text-stone-400 hover:text-stone-600 transition-colors pb-1">Shadow</button>
+</div>
+<button class="flex items-center gap-2 text-stone-600 hover:text-primary transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+          Advanced Filters
+        </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-stone-400 font-label">User</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-stone-400 font-label">Reason</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-stone-400 font-label">Type</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-stone-400 font-label">Time Remaining</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.1em] text-stone-400 font-label text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center font-bold text-primary-container text-xs">EK</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Elias K. Thorne</p>
+<p class="text-[10px] text-stone-400 font-mono">ID: #40921</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-surface-variant line-clamp-1">Intentional misinformation in bibliography records</span>
+</td>
+<td class="px-6 py-5">
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider font-label">Temporary</span>
+</td>
+<td class="px-6 py-5">
+<div class="w-48">
+<div class="flex justify-between items-center mb-1 text-[10px] font-bold text-stone-500 uppercase tracking-tight">
+<span>12h 45m left</span>
+<span>85%</span>
+</div>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container" style="width: 85%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-xs font-bold text-primary hover:underline transition-all">Lift Ban</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-lg object-cover" data-alt="Portrait of a young woman with a calm expression, natural lighting, academic vibe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsarIji9RIZ4Nf-VzajFwvEvqCYqBgZ8lfW4yGopKEzVVgJBmep3NVkWoU33xxTnCeBasn36b1GXAWY_9aR0h-JpVRUNjLSTRMWiItpeIAEq1Ake7RKzFcrZAIahAS535EgqS6O0HPzhR7k0jZYOPU8yQZdvu6ljNSoy39lCQVXVlZV4Zq33pcpuFcTk0hOgU2mCK-msjIdXkflBlRxCuSc2QoKLqP1-Gw986AayfjYfZ2jyDlKy3LNiJZL9U1noqNAUl90Hh_NvSQ"/>
+<div>
+<p class="text-sm font-semibold text-on-surface">Sarah V. Sterling</p>
+<p class="text-[10px] text-stone-400 font-mono">ID: #99012</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-surface-variant line-clamp-1">Spamming automated review scripts</span>
+</td>
+<td class="px-6 py-5">
+<span class="bg-tertiary-fixed-dim text-on-tertiary-fixed text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider font-label">Pending Review</span>
+</td>
+<td class="px-6 py-5">
+<div class="w-48">
+<div class="flex justify-between items-center mb-1 text-[10px] font-bold text-stone-500 uppercase tracking-tight">
+<span>3d 2h left</span>
+<span>40%</span>
+</div>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-container" style="width: 40%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-xs font-bold text-primary hover:underline transition-all">Lift Ban</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center font-bold text-primary-container text-xs">AX</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Anonymous Librarian</p>
+<p class="text-[10px] text-stone-400 font-mono">ID: #00421</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-surface-variant line-clamp-1">Severe community guideline violation: Harassment</span>
+</td>
+<td class="px-6 py-5">
+<span class="bg-error-container text-on-error-container text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider font-label">Permanent</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-[10px] font-bold text-error uppercase tracking-widest flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="block">block</span>
+                  Indefinite
+                </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-xs font-bold text-primary hover:underline transition-all">Lift Ban</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-lg object-cover" data-alt="Portrait of a mature man with a beard, neutral expression, office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfkRsINMfCgIgBeBGzCLwBg3smzqXfTC7V7Z8vauWEZspUbdsCdDoySA_RWw_yrT1GVP39UYtbuknovT6fcGAHSZ4EVnD8qu7-TMn4IlGztHPL02_bstl6yUZMibzJLiiWThgu4Y8ylrGgilIORnGQV9qLUp7ZTPKgIiIz2KrW9YGq_zjXZGEWX3m_IwKzT2UTXlkQU_wWYi32GeCfAZv0pfRWB3WRIQa3q5bOxG6naRv9yFRaThbk8O1crJbcItgJgLr66B8V5RUN"/>
+<div>
+<p class="text-sm font-semibold text-on-surface">Marcus Reed</p>
+<p class="text-[10px] text-stone-400 font-mono">ID: #11823</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm text-on-surface-variant line-clamp-1">Attempted unauthorized access to vault logs</span>
+</td>
+<td class="px-6 py-5">
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider font-label">Temporary</span>
+</td>
+<td class="px-6 py-5">
+<div class="w-48">
+<div class="flex justify-between items-center mb-1 text-[10px] font-bold text-stone-500 uppercase tracking-tight">
+<span>14d 0h left</span>
+<span>10%</span>
+</div>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container" style="width: 10%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-xs font-bold text-primary hover:underline transition-all">Lift Ban</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 bg-surface-container-low/30 border-t border-surface-container flex items-center justify-between">
+<span class="text-xs text-stone-500">Showing 4 of 1,284 enforcements</span>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary font-bold text-xs">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container transition-colors font-bold text-xs">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container transition-colors font-bold text-xs">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Asymmetric Detail Cards (Bento) -->
+<div class="mt-8 grid grid-cols-12 gap-6">
+<div class="col-span-8 bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline text-2xl font-bold mb-4">Registry Integrity Report</h3>
+<p class="text-stone-600 text-sm max-w-lg mb-6 leading-relaxed">System-wide audit of community standards completed at 08:00 AM UTC. Current violation rate is down 12% compared to the previous quarter. Most common infractions: Meta-data spam (42%).</p>
+<div class="flex gap-6">
+<div class="flex flex-col">
+<span class="text-3xl font-headline font-bold text-primary">99.8%</span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-stone-400">Resolution Accuracy</span>
+</div>
+<div class="flex flex-col">
+<span class="text-3xl font-headline font-bold text-primary">12ms</span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-stone-400">Response Latency</span>
+</div>
+</div>
+</div>
+<div class="absolute right-0 bottom-0 top-0 w-1/3 opacity-10 pointer-events-none bg-gradient-to-l from-primary to-transparent"></div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[120px] text-primary/5" data-icon="verified_user">verified_user</span>
+</div>
+<div class="col-span-4 bg-primary p-8 rounded-xl text-on-primary flex flex-col justify-between">
+<div>
+<span class="bg-primary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Active Task</span>
+<h3 class="font-headline text-2xl font-bold mt-4">Draft New Protocol</h3>
+<p class="text-on-primary/70 text-xs mt-2 font-light leading-normal">Update Section 4.2 of the Community Standards to address synthetic content generated via local catalog tools.</p>
+</div>
+<button class="mt-8 w-full py-3 bg-white text-primary rounded-lg font-bold text-xs uppercase tracking-widest hover:bg-primary-fixed transition-colors">Open Editor</button>
+</div>
+</div>
+</main>
+<!-- Lift Ban Modal (Simulated Overlay) -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-6 pointer-events-none opacity-0 invisible translate-y-4 scale-95" id="lift-ban-modal">
+<!-- Overlay -->
+<div class="absolute inset-0 bg-on-surface/20 backdrop-blur-md"></div>
+<!-- Modal Card -->
+<div class="relative bg-surface p-10 rounded-xl max-w-md w-full shadow-2xl pointer-events-auto border border-outline-variant/15">
+<div class="flex items-start justify-between mb-8">
+<div>
+<h2 class="font-headline text-3xl font-bold text-on-surface">Lift Enforcement</h2>
+<p class="text-stone-500 text-sm mt-2">Are you certain you wish to restore access for <span class="font-bold text-on-surface">Elias K. Thorne</span>?</p>
+</div>
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="gavel" style="font-variation-settings: 'FILL' 1;">gavel</span>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<label class="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2 font-label">Reason for early lifting</label>
+<textarea class="w-full bg-surface-container-highest border-none border-b-2 border-stone-300 focus:border-primary focus:ring-0 rounded-lg p-3 text-sm text-on-surface placeholder:text-stone-400" placeholder="Provide justification for registry audit logs..." rows="3"></textarea>
+</div>
+<div class="bg-surface-container-low p-4 rounded-lg flex gap-3 items-center">
+<span class="material-symbols-outlined text-stone-400" data-icon="info">info</span>
+<p class="text-[11px] text-stone-500 leading-normal">This action will be logged in the Librarian Ledger and cannot be automatically reversed.</p>
+</div>
+</div>
+<div class="flex gap-4 mt-10">
+<button class="flex-1 py-4 text-stone-500 font-bold text-xs uppercase tracking-widest hover:bg-surface-container transition-colors rounded-xl">Cancel Action</button>
+<button class="flex-1 py-4 bg-primary text-on-primary font-bold text-xs uppercase tracking-widest rounded-xl bg-gradient-to-br from-primary to-primary-container shadow-lg">Confirm &amp; Lift</button>
+</div>
+</div>
+</div>
+<!-- Accessibility Note: The modal is shown by a hypothetical trigger. To see it, add classes 'opacity-100 visible translate-y-0 scale-100' to the modal container. -->
+</body></html>

@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize, timeout } from 'rxjs/operators';
-import {
-  GovernanceApiService,
-  ModerationShareResp,
-  ModerationStatus
-} from '../core/governance-api.service';
+import { GovernanceApiService, ModerationShareResp, ModerationStatus } from '../core/governance-api.service';
 
 @Component({
   selector: 'app-moderation-shares-page',
@@ -16,18 +12,19 @@ import {
   styleUrl: './moderation-shares-page.component.scss'
 })
 export class ModerationSharesPageComponent {
-  readonly statusOptions: Array<ModerationStatus | ''> = ['', 'REJECTED', 'PENDING', 'APPROVED'];
-  selectedStatus: ModerationStatus | '' = 'REJECTED';
-  reviewNote = '';
-
+  readonly statusOptions: Array<ModerationStatus | ''> = ['', 'PENDING', 'APPROVED', 'REJECTED'];
+  selectedStatus: ModerationStatus | '' = 'PENDING';
   loading = false;
   submitting = false;
   error = '';
   success = '';
   items: ModerationShareResp[] = [];
+  selectedItem: ModerationShareResp | null = null;
   total = 0;
   page = 0;
   size = 20;
+
+  reviewNote = '';
 
   constructor(
     private readonly api: GovernanceApiService,
@@ -36,48 +33,25 @@ export class ModerationSharesPageComponent {
     this.reload();
   }
 
-  reload(): void {
-    this.loading = true;
-    this.error = '';
-    this.success = '';
-    this.api
-      .listModerationShares(this.selectedStatus, this.page, this.size)
-      .pipe(
-        timeout(15000),
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          this.items = res.items;
-          this.total = res.page.totalElements;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          this.error = err?.error?.message || err?.message || 'Failed to load moderation shares.';
-          this.cdr.detectChanges();
-        }
-      });
+  selectItem(item: ModerationShareResp): void {
+    this.selectedItem = item;
+    this.reviewNote = '';
+    this.cdr.detectChanges();
   }
 
-  approve(id: string): void {
+  approve(): void {
+    if (!this.selectedItem) return;
     this.submitting = true;
     this.error = '';
     this.success = '';
-    this.api
-      .approveModerationShare(id, this.reviewNote)
+    this.api.approveModerationShare(this.selectedItem.id, this.reviewNote)
       .pipe(
         timeout(15000),
-        finalize(() => {
-          this.submitting = false;
-          this.cdr.detectChanges();
-        })
+        finalize(() => { this.submitting = false; this.cdr.detectChanges(); })
       )
       .subscribe({
-        next: (res) => {
-          this.success = `Share ${res.id} approved.`;
+        next: () => {
+          this.success = 'Share approved.';
           this.reload();
           this.cdr.detectChanges();
         },
@@ -88,22 +62,19 @@ export class ModerationSharesPageComponent {
       });
   }
 
-  reject(id: string): void {
+  reject(): void {
+    if (!this.selectedItem) return;
     this.submitting = true;
     this.error = '';
     this.success = '';
-    this.api
-      .rejectModerationShare(id, this.reviewNote)
+    this.api.rejectModerationShare(this.selectedItem.id, this.reviewNote)
       .pipe(
         timeout(15000),
-        finalize(() => {
-          this.submitting = false;
-          this.cdr.detectChanges();
-        })
+        finalize(() => { this.submitting = false; this.cdr.detectChanges(); })
       )
       .subscribe({
-        next: (res) => {
-          this.success = `Share ${res.id} rejected.`;
+        next: () => {
+          this.success = 'Share rejected.';
           this.reload();
           this.cdr.detectChanges();
         },
@@ -114,7 +85,34 @@ export class ModerationSharesPageComponent {
       });
   }
 
-  canReview(item: ModerationShareResp): boolean {
-    return item.status === 'PENDING';
+  reload(): void {
+    const previousSelectedId = this.selectedItem?.id ?? null;
+    this.loading = true;
+    this.error = '';
+    this.api.listModerationShares(this.selectedStatus, this.page, this.size)
+      .pipe(
+        timeout(15000),
+        finalize(() => { this.loading = false; this.cdr.detectChanges(); })
+      )
+      .subscribe({
+        next: (res) => {
+          this.items = res.items;
+          this.total = res.page.totalElements;
+          if (this.items.length === 0) {
+            this.selectedItem = null;
+            this.reviewNote = '';
+          } else {
+            const matched = previousSelectedId
+              ? this.items.find((item) => item.id === previousSelectedId)
+              : null;
+            this.selectItem(matched ?? this.items[0]);
+          }
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.error = err?.error?.message || err?.message || 'Failed to load moderation shares.';
+          this.cdr.detectChanges();
+        }
+      });
   }
 }

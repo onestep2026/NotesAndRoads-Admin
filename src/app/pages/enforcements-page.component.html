@@ -1,63 +1,76 @@
-<section class="panel">
-  <div class="panel-head">
-    <h2>Enforcements</h2>
-    <div class="toolbar">
-      <input [(ngModel)]="targetUserIdInput" placeholder="targetUserId" />
-      <select [(ngModel)]="selectedStatus">
-        @for (status of statusOptions; track status) {
-          <option [ngValue]="status">{{ status || 'ALL' }}</option>
-        }
-      </select>
-      <button type="button" (click)="reload()">Filter</button>
+<div class="enforcement-page">
+  <header class="review-page-header">
+    <div>
+      <h2>Enforcements</h2>
+      <p class="admin-muted">{{ total }} records · active first</p>
     </div>
-  </div>
+    <div class="admin-pill-group">
+      @for (status of statusOptions; track status) {
+        <button
+          class="admin-pill"
+          [class.is-active]="selectedStatus === status"
+          (click)="selectedStatus = status; reload()"
+        >
+          {{ status || 'ALL' }}
+        </button>
+      }
+    </div>
+  </header>
 
   @if (error) {
-    <p class="error">{{ error }}</p>
+    <div class="admin-alert error">{{ error }}</div>
   }
   @if (success) {
-    <p class="success">{{ success }}</p>
+    <div class="admin-alert success">{{ success }}</div>
   }
 
-  <div class="lift-box">
-    <input [(ngModel)]="liftReason" placeholder="Lift reason (optional)" />
-  </div>
-
-  @if (loading) {
-    <p>Loading enforcements...</p>
-  } @else {
-    <p class="meta">Total: {{ total }}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Type</th>
-          <th>Status</th>
-          <th>Target User</th>
-          <th>Reason</th>
-          <th>Effective</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of items; track item.id) {
+  <section class="table-wrap">
+    @if (loading) {
+      <div class="admin-empty">Loading enforcements...</div>
+    } @else if (items.length === 0) {
+      <div class="admin-empty">No enforcements under this filter.</div>
+    } @else {
+      <table class="admin-table">
+        <thead>
           <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.type }}</td>
-            <td>{{ item.status }}</td>
-            <td>{{ item.targetUserId }}</td>
-            <td>{{ item.reasonCode }}</td>
-            <td>{{ item.effectiveFrom }} ~ {{ item.effectiveUntil || 'N/A' }}</td>
-            <td>
-              @if (item.status === 'ACTIVE') {
-                <button type="button" [disabled]="submitting" (click)="lift(item.id)">Lift</button>
-              } @else {
-                <span>-</span>
-              }
-            </td>
+            <th>ID</th>
+            <th>User</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Reason</th>
+            <th>Effective</th>
+            <th>Action</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  }
-</section>
+        </thead>
+        <tbody>
+          @for (item of items; track item.id) {
+            <tr>
+              <td>#{{ item.id }}</td>
+              <td>{{ item.targetUserId }}</td>
+              <td>{{ item.type }}</td>
+              <td>
+                <span class="admin-badge"
+                  [ngClass]="{
+                    active: item.status === 'ACTIVE',
+                    lifted: item.status === 'LIFTED',
+                    expired: item.status === 'EXPIRED'
+                  }"
+                >{{ item.status }}</span>
+              </td>
+              <td>{{ item.reasonText || item.reasonCode }}</td>
+              <td>
+                {{ item.effectiveFrom | date:'shortDate' }} -
+                {{ item.effectiveUntil ? (item.effectiveUntil | date:'shortDate') : 'Permanent' }}
+              </td>
+              <td>
+                @if (item.status === 'ACTIVE') {
+                  <button class="admin-button" (click)="lift(item)" [disabled]="submitting">Lift</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</div>

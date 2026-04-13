@@ -1,47 +1,119 @@
-<section class="panel">
-  <div class="panel-head">
-    <h2>Report Queue</h2>
-    <div class="toolbar">
-      <select [(ngModel)]="selectedStatus" (change)="reload()">
-        @for (status of statusOptions; track status) {
-          <option [ngValue]="status">{{ status || 'ALL' }}</option>
-        }
-      </select>
-      <button type="button" (click)="reload()">Refresh</button>
+<div class="review-page">
+  <header class="review-page-header">
+    <div>
+      <h2>Report Queue</h2>
+      <p class="admin-muted">{{ total }} reports · review evidence and enforcement history</p>
     </div>
-  </div>
+    <div class="admin-pill-group">
+      @for (status of statusOptions; track status) {
+        <button
+          class="admin-pill"
+          [class.is-active]="selectedStatus === status"
+          (click)="selectedStatus = status; reload()"
+        >
+          {{ status || 'ALL' }}
+        </button>
+      }
+    </div>
+  </header>
 
   @if (error) {
-    <p class="error">{{ error }}</p>
+    <div class="admin-alert error">{{ error }}</div>
+  }
+  @if (success) {
+    <div class="admin-alert success">{{ success }}</div>
   }
 
-  @if (loading) {
-    <p>Loading reports...</p>
-  } @else {
-    <p class="meta">Total: {{ total }}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Status</th>
-          <th>Target</th>
-          <th>Reason</th>
-          <th>Reporter</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
+  <section class="review-split report-layout">
+    <aside class="review-list">
+      @if (loading) {
+        <div class="admin-empty">Loading reports...</div>
+      } @else if (reports.length === 0) {
+        <div class="admin-empty">No reports under this filter.</div>
+      } @else {
         @for (report of reports; track report.id) {
-          <tr [routerLink]="['/reports', report.id]">
-            <td>{{ report.id }}</td>
-            <td>{{ report.status }}</td>
-            <td>{{ report.targetContentType }}#{{ report.targetContentId }}</td>
-            <td>{{ report.reasonCode }}</td>
-            <td>{{ report.reporterUserId }}</td>
-            <td>{{ report.createdAt || '-' }}</td>
-          </tr>
+          <button class="review-list-item" [class.selected]="selectedReport?.id === report.id" (click)="selectReport(report)">
+            <div class="row">
+              <strong>#{{ report.id }}</strong>
+              <span class="admin-badge"
+                [ngClass]="{
+                  open: report.status === 'OPEN',
+                  'in-review': report.status === 'IN_REVIEW',
+                  'resolved-confirmed': report.status === 'RESOLVED_CONFIRMED',
+                  'resolved-rejected': report.status === 'RESOLVED_REJECTED'
+                }"
+              >{{ report.status }}</span>
+            </div>
+            <p class="title">{{ report.reasonCode || 'No reason code' }}</p>
+            <p class="excerpt">{{ report.reasonText || 'No detailed reason provided.' }}</p>
+            <p class="admin-muted">Target user {{ report.targetUserId }} · {{ report.createdAt | date:'short' }}</p>
+          </button>
         }
-      </tbody>
-    </table>
-  }
-</section>
+      }
+    </aside>
+
+    <main class="review-detail">
+      @if (!selectedReport) {
+        <div class="admin-empty">Select one report to review.</div>
+      } @else {
+        <section class="detail-block">
+          <div class="detail-meta-grid">
+            <p><span>ID</span>#{{ selectedReport.id }}</p>
+            <p><span>Status</span>{{ selectedReport.status }}</p>
+            <p><span>Reporter</span>{{ selectedReport.reporterUserId }}</p>
+            <p><span>Target User</span>{{ selectedReport.targetUserId }}</p>
+            <p><span>Content Type</span>{{ selectedReport.targetContentType }}</p>
+            <p><span>Content ID</span>{{ selectedReport.targetContentId }}</p>
+          </div>
+
+          <h3>Reporter Statement</h3>
+          <article class="detail-article">{{ selectedReport.reasonText || 'No detailed reason provided.' }}</article>
+
+          <label class="detail-label">Review Note</label>
+          <textarea
+            class="admin-textarea"
+            rows="5"
+            [(ngModel)]="reviewNote"
+            placeholder="Write internal note..."
+          ></textarea>
+
+          <div class="detail-actions">
+            <button class="admin-button" [disabled]="submitting" (click)="updateStatus('IN_REVIEW')">Keep In Review</button>
+            <button class="admin-button primary" [disabled]="submitting" (click)="updateStatus('RESOLVED_CONFIRMED')">Confirm Violation</button>
+            <button class="admin-button ghost-danger" [disabled]="submitting" (click)="updateStatus('RESOLVED_REJECTED')">Reject Report</button>
+          </div>
+        </section>
+      }
+    </main>
+
+    <aside class="history-panel">
+      <h3>Target User Enforcements</h3>
+      @if (!selectedReport) {
+        <p class="admin-muted">No target selected.</p>
+      } @else if (historyLoading) {
+        <p class="admin-muted">Loading history...</p>
+      } @else if (targetUserHistory.length === 0) {
+        <p class="admin-muted">No prior enforcement.</p>
+      } @else {
+        <div class="history-list">
+          @for (entry of targetUserHistory; track entry.id) {
+            <article class="history-item">
+              <div class="row">
+                <strong>{{ entry.type }}</strong>
+                <span class="admin-badge"
+                  [ngClass]="{
+                    active: entry.status === 'ACTIVE',
+                    lifted: entry.status === 'LIFTED',
+                    expired: entry.status === 'EXPIRED'
+                  }"
+                >{{ entry.status }}</span>
+              </div>
+              <p>{{ entry.reasonText || entry.reasonCode }}</p>
+              <p class="admin-muted">{{ entry.createdAt | date:'short' }}</p>
+            </article>
+          }
+        </div>
+      }
+    </aside>
+  </section>
+</div>

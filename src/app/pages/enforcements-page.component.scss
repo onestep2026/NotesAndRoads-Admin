@@ -1,83 +1,54 @@
-.panel {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 16px;
+:host {
+  display: block;
 }
 
-.panel-head {
+.enforcement-page {
+  display: grid;
+  gap: 12px;
+}
+
+.review-page-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  gap: 10px;
+  align-items: flex-end;
 }
 
-.panel-head h2 {
-  margin: 0;
+.review-page-header h2 {
+  font-size: 28px;
 }
 
-.toolbar {
-  display: flex;
-  gap: 8px;
+.table-wrap {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: auto;
 }
 
-.toolbar input,
-.toolbar select {
-  height: 36px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 0 8px;
-}
-
-.toolbar button,
-button {
-  height: 36px;
-  border: none;
-  border-radius: 8px;
-  background: #2563eb;
-  color: #fff;
-  padding: 0 12px;
-  cursor: pointer;
-}
-
-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.lift-box {
-  margin: 8px 0 10px;
-}
-
-.lift-box input {
-  width: 100%;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 8px 10px;
-}
-
-table {
+.admin-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
-th,
-td {
-  border-bottom: 1px solid #e5e7eb;
-  padding: 9px 8px;
+.admin-table th,
+.admin-table td {
   text-align: left;
-  font-size: 14px;
+  padding: 10px;
+  border-bottom: 1px solid #eaecf0;
+  font-size: 13px;
+  vertical-align: top;
 }
 
-.error {
-  color: #b91c1c;
+.admin-table th {
+  color: var(--text-muted);
+  font-weight: 700;
+  background: var(--surface-soft);
 }
 
-.success {
-  color: #047857;
-}
-
-.meta {
-  color: #6b7280;
-  margin: 4px 0 10px;
+@media (max-width: 980px) {
+  .review-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

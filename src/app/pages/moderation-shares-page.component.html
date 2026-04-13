@@ -1,69 +1,88 @@
-<section class="panel">
-  <div class="panel-head">
-    <h2>Moderation Shares</h2>
-    <div class="toolbar">
-      <select [(ngModel)]="selectedStatus">
-        @for (status of statusOptions; track status) {
-          <option [ngValue]="status">{{ status || 'ALL' }}</option>
-        }
-      </select>
-      <button type="button" (click)="reload()">Filter</button>
+<div class="review-page">
+  <header class="review-page-header">
+    <div>
+      <h2>Moderation Shares</h2>
+      <p class="admin-muted">{{ total }} items in queue</p>
     </div>
-  </div>
+    <div class="admin-pill-group">
+      @for (status of statusOptions; track status) {
+        <button
+          class="admin-pill"
+          [class.is-active]="selectedStatus === status"
+          (click)="selectedStatus = status; reload()"
+        >
+          {{ status || 'ALL' }}
+        </button>
+      }
+    </div>
+  </header>
 
   @if (error) {
-    <p class="error">{{ error }}</p>
+    <div class="admin-alert error">{{ error }}</div>
   }
   @if (success) {
-    <p class="success">{{ success }}</p>
+    <div class="admin-alert success">{{ success }}</div>
   }
 
-  <div class="approve-box">
-    <input [(ngModel)]="reviewNote" placeholder="Admin review note (optional)" />
-  </div>
-
-  @if (loading) {
-    <p>Loading moderation shares...</p>
-  } @else {
-    <p class="meta">Total: {{ total }}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Share ID</th>
-          <th>Status</th>
-          <th>Content</th>
-          <th>Owner</th>
-          <th>Risk</th>
-          <th>Label</th>
-          <th>Message</th>
-          <th>Moderated At</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
+  <section class="review-split">
+    <aside class="review-list">
+      @if (loading) {
+        <div class="admin-empty">Loading queue...</div>
+      } @else if (items.length === 0) {
+        <div class="admin-empty">No moderation shares under this filter.</div>
+      } @else {
         @for (item of items; track item.id) {
-          <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.status }}</td>
-            <td>{{ item.contentType }}#{{ item.contentId }}</td>
-            <td>{{ item.ownerUserId || '-' }}</td>
-            <td>{{ item.moderationRiskLevel || '-' }}</td>
-            <td>{{ item.moderationLabel || '-' }}</td>
-            <td>{{ item.moderationMessage || '-' }}</td>
-            <td>{{ item.moderatedAt || '-' }}</td>
-            <td>
-              @if (canReview(item)) {
-                <div class="actions">
-                  <button type="button" [disabled]="submitting" (click)="approve(item.id)">Approve</button>
-                  <button type="button" class="danger" [disabled]="submitting" (click)="reject(item.id)">Reject</button>
-                </div>
-              } @else {
-                <span>-</span>
-              }
-            </td>
-          </tr>
+          <button class="review-list-item" [class.selected]="selectedItem?.id === item.id" (click)="selectItem(item)">
+            <div class="row">
+              <strong>#{{ item.id }}</strong>
+              <span class="admin-badge"
+                [ngClass]="{
+                  pending: item.status === 'PENDING',
+                  approved: item.status === 'APPROVED',
+                  rejected: item.status === 'REJECTED'
+                }"
+              >{{ item.status }}</span>
+            </div>
+            <p class="title">{{ item.contentType }}</p>
+            <p class="excerpt">Content ID: {{ item.contentId }}</p>
+            <p class="admin-muted">{{ item.createdAt | date:'short' }}</p>
+          </button>
         }
-      </tbody>
-    </table>
-  }
-</section>
+      }
+    </aside>
+
+    <main class="review-detail">
+      @if (!selectedItem) {
+        <div class="admin-empty">Select one item to review.</div>
+      } @else {
+        <section class="detail-block">
+          <div class="detail-meta-grid">
+            <p><span>ID</span>#{{ selectedItem.id }}</p>
+            <p><span>Status</span>{{ selectedItem.status }}</p>
+            <p><span>Content Type</span>{{ selectedItem.contentType }}</p>
+            <p><span>Content ID</span>{{ selectedItem.contentId }}</p>
+            <p><span>Visibility</span>{{ selectedItem.visibility || 'PUBLIC' }}</p>
+            <p><span>Created At</span>{{ selectedItem.createdAt | date:'medium' }}</p>
+          </div>
+
+          @if (selectedItem.status === 'PENDING') {
+            <label class="detail-label">Review Note</label>
+            <textarea
+              class="admin-textarea"
+              rows="5"
+              [(ngModel)]="reviewNote"
+              placeholder="Write moderation note..."
+            ></textarea>
+
+            <div class="detail-actions">
+              <button class="admin-button primary" [disabled]="submitting" (click)="approve()">Approve</button>
+              <button class="admin-button ghost-danger" [disabled]="submitting" (click)="reject()">Reject</button>
+            </div>
+          } @else {
+            <p class="admin-muted">This item is already resolved.</p>
+          }
+        </section>
+      }
+    </main>
+  </section>
+</div>

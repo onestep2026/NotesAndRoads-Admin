@@ -1,13 +1,136 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <title>知行 Admin</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-surface: #fcf9f4;
+      --color-surface-container-low: #f6f3ee;
+      --color-surface-container-highest: #f0ede9;
+      --color-surface-container-lowest: #ffffff;
+      --color-brand-primary: #144227;
+      --color-brand-primary-container: #2d5a3d;
+      --color-on-surface: #1c1c19;
+      --font-serif: "Newsreader", serif;
+      --font-sans: "Inter", sans-serif;
+      --shadow-ambient: 0px 12px 32px rgba(28, 28, 25, 0.06);
+      --ease-heavy-paper: cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    /* GLOBAL RESET */
+    html, body {
+      background-color: var(--color-surface) !important;
+      color: var(--color-on-surface);
+      font-family: var(--font-sans);
+      margin: 0; padding: 0; 
+      height: 100vh !important; 
+      max-height: 100vh !important;
+      overflow: hidden !important;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* THE STUDIO SHELL LAYOUT */
+    .flex { display: flex !important; }
+    .flex-col { flex-direction: column !important; }
+    .flex-1 { flex: 1 !important; min-height: 0 !important; }
+    .flex-shrink-0 { flex-shrink: 0 !important; }
+    .items-center { align-items: center !important; }
+    .items-end { align-items: flex-end !important; }
+    .items-start { align-items: flex-start !important; }
+    .justify-between { justify-content: space-between !important; }
+    .justify-center { justify-content: center !important; }
+    
+    .grid { display: grid !important; }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .gap-3 { gap: 0.75rem !important; }
+    .gap-4 { gap: 1rem !important; }
+    .gap-6 { gap: 1.5rem !important; }
+    .gap-8 { gap: 2rem !important; }
+    .gap-10 { gap: 2.5rem !important; }
+
+    .relative { position: relative !important; }
+    .absolute { position: absolute !important; }
+    .fixed { position: fixed !important; }
+    .inset-0 { top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important; }
+    .right-0 { right: 0 !important; }
+    .z-50 { z-index: 50 !important; }
+    .z-\[100\] { z-index: 100 !important; }
+    .z-\[-1\] { z-index: -1 !important; }
+    .cursor-pointer { cursor: pointer !important; }
+    .block { display: block !important; }
+    .hidden { display: none !important; }
+    @media (min-width: 640px) { .sm\:block { display: block !important; } }
+
+    .h-full { height: 100% !important; }
+    .h-screen { height: 100vh !important; overflow: hidden !important; }
+    .min-h-0 { min-height: 0 !important; }
+    .min-h-screen { min-height: 100vh !important; }
+    .w-full { width: 100% !important; }
+    .w-64 { width: 16rem !important; }
+    .w-80 { width: 20rem !important; }
+    .w-96 { width: 24rem !important; }
+    .max-w-7xl { max-width: 80rem !important; }
+    .mx-auto { margin-left: auto !important; margin-right: auto !important; }
+
+    /* CUSTOM SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(28, 28, 25, 0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(28, 28, 25, 0.2); }
+
+    /* SIDEBAR (Archive Index) */
+    aside {
+      background-color: var(--color-surface-container-low) !important;
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+    }
+
+    /* THE DESK (Main Workspace) */
+    main { flex: 1; display: flex; flex-direction: column; overflow: hidden !important; }
+    .overflow-y-auto { overflow-y: auto !important; scroll-behavior: smooth; }
+    .overflow-hidden { overflow: hidden !important; }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-serif) !important; margin: 0; font-weight: 500; }
+    .text-4xl { font-size: 2.25rem !important; }
+    .text-sm { font-size: 0.875rem !important; }
+    .text-xs { font-size: 0.75rem !important; }
+    .font-serif { font-family: var(--font-serif) !important; }
+    .font-sans { font-family: var(--font-sans) !important; }
+    .uppercase { text-transform: uppercase !important; }
+    .tracking-widest { letter-spacing: 0.1em !important; }
+
+    /* BUTTONS */
+    .btn-primary {
+      background: linear-gradient(145deg, var(--color-brand-primary), var(--color-brand-primary-container)) !important;
+      color: white !important;
+      border: none !important;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 400ms var(--ease-heavy-paper);
+    }
+
+    .studio-card {
+      background-color: var(--color-surface-container-lowest) !important;
+      border-radius: 2.5rem !important;
+      box-shadow: var(--shadow-ambient) !important;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-surface text-on-surface font-sans antialiased">
   <app-root></app-root>
 </body>
 </html>

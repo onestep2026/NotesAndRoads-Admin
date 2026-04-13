@@ -1,197 +1,192 @@
-<section class="panel">
-  <div class="panel-head">
-    <h2>Book Submissions</h2>
-    <div class="toolbar">
-      <select [(ngModel)]="selectedStatus">
-        @for (status of statusOptions; track status) {
-          <option [ngValue]="status">{{ status || 'ALL' }}</option>
-        }
-      </select>
-      <button type="button" (click)="reload()">Filter</button>
+<div class="review-page">
+  <header class="review-page-header">
+    <div>
+      <h2>Book Submissions</h2>
+      <p class="admin-muted">{{ total }} submissions · resolve pending records quickly</p>
     </div>
-  </div>
-  <div class="rebuild-bar">
-    <input
-      type="text"
-      [(ngModel)]="rebuildEditionId"
-      placeholder="Edition ID (optional)"
-    />
-    <input
-      type="number"
-      min="1"
-      max="1000"
-      step="1"
-      [(ngModel)]="rebuildBatchSize"
-      placeholder="Batch size"
-    />
-    <button type="button" [disabled]="rebuilding" (click)="rebuildSearchIndex()">
-      {{ rebuilding ? 'Rebuilding...' : 'Rebuild Search Index' }}
-    </button>
-  </div>
+    <div class="admin-pill-group">
+      @for (status of statusOptions; track status) {
+        <button
+          class="admin-pill"
+          [class.is-active]="selectedStatus === status"
+          (click)="selectedStatus = status; reload()"
+        >
+          {{ status || 'ALL' }}
+        </button>
+      }
+    </div>
+  </header>
 
   @if (error) {
-    <p class="error">{{ error }}</p>
+    <div class="admin-alert error">{{ error }}</div>
   }
   @if (success) {
-    <p class="success">{{ success }}</p>
+    <div class="admin-alert success">{{ success }}</div>
   }
 
-  @if (loading) {
-    <p>Loading submissions...</p>
-  } @else {
-    <p class="meta">Total: {{ total }}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Status</th>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Translator</th>
-          <th>Lang</th>
-          <th>ISBN</th>
-          <th>Submitter Email</th>
-          <th>Submitter</th>
-          <th>Review</th>
-        </tr>
-      </thead>
-      <tbody>
+  <section class="book-page-tools">
+    <label>
+      <span class="admin-muted">Edition ID (optional)</span>
+      <input class="admin-input" type="text" [(ngModel)]="rebuildEditionId" placeholder="e.g. 123" />
+    </label>
+    <label>
+      <span class="admin-muted">Batch Size</span>
+      <input class="admin-input" type="number" [(ngModel)]="rebuildBatchSize" min="1" max="1000" />
+    </label>
+    <button class="admin-button" (click)="rebuildSearchIndex()" [disabled]="rebuilding">
+      {{ rebuilding ? 'Rebuilding...' : 'Rebuild Search Index' }}
+    </button>
+  </section>
+
+  <section class="review-split book-layout">
+    <aside class="review-list">
+      @if (loading) {
+        <div class="admin-empty">Loading submissions...</div>
+      } @else if (items.length === 0) {
+        <div class="admin-empty">No submissions under this filter.</div>
+      } @else {
         @for (item of items; track item.id) {
-          <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.reviewStatus }}</td>
-            <td>{{ item.title }}</td>
-            <td>
-              @if (item.reviewStatus === 'PENDING') {
-                @if ((reviewAuthors[item.id] || []).length === 0) {
-                  <span>{{ item.authorText || '-' }}</span>
-                } @else {
-                  <div class="author-review-list">
-                    @for (author of reviewAuthors[item.id]; track author.name) {
-                      <div class="author-review-item">
-                        <div class="author-name">{{ author.name }}</div>
-                        <div class="author-actions">
-                          <button
-                            type="button"
-                            [disabled]="submitting || author.loading"
-                            (click)="refreshAuthorCandidates(item.id, author)"
-                          >
-                            {{ author.loading ? 'Searching...' : 'Search' }}
-                          </button>
-                          @if (author.error) {
-                            <span class="error-inline">{{ author.error }}</span>
-                          }
-                        </div>
-                        <div class="author-choice-row">
-                          <select
-                            [(ngModel)]="author.decision"
-                            [disabled]="submitting"
-                            (ngModelChange)="onAuthorDecisionChange(author)"
-                          >
-                            @if (hasAuthorCandidates(author)) {
-                              <option value="EXISTING">Use existing</option>
-                            }
-                            <option value="NEW">Create new</option>
-                          </select>
-                          @if (author.decision === 'EXISTING') {
-                            <select [(ngModel)]="author.selectedPersonId" [disabled]="submitting">
-                              @for (candidate of author.candidates; track candidate.personId) {
-                                <option [ngValue]="candidate.personId">
-                                  #{{ candidate.personId }} {{ candidate.displayName }}
-                                </option>
-                              }
-                            </select>
-                          } @else {
-                            <span class="author-new-label">Will create new author</span>
-                          }
-                        </div>
-                        @if (author.candidates.length > 0) {
-                          <div class="author-alias">
-                            @for (candidate of author.candidates; track candidate.personId) {
-                              <div>#{{ candidate.personId }} aliases: {{ (candidate.aliasNames || []).join(', ') || '-' }}</div>
-                              <div>
-                                works({{ candidate.workCount ?? 0 }}):
-                                {{ (candidate.matchedWorks || []).join(' / ') || '-' }}
-                              </div>
-                            }
-                          </div>
-                        }
-                      </div>
-                    }
-                  </div>
-                }
-              } @else {
-                <span>{{ item.authorText || '-' }}</span>
-              }
-            </td>
-            <td>
-              @if (item.reviewStatus === 'PENDING') {
-                <div>
-                  <input
-                    [(ngModel)]="reviewTranslatorTexts[item.id]"
-                    [disabled]="submitting"
-                    placeholder="Translator (optional)"
-                  />
-                </div>
-              } @else {
-                <span>{{ item.translatorText || '-' }}</span>
-              }
-            </td>
-            <td>
-              @if (item.reviewStatus === 'PENDING') {
-                <select [(ngModel)]="reviewLanguages[item.id]" [disabled]="submitting">
+          <button class="review-list-item" [class.selected]="selectedItem?.id === item.id" (click)="selectItem(item)">
+            <div class="row">
+              <strong>#{{ item.id }}</strong>
+              <span class="admin-badge"
+                [ngClass]="{
+                  pending: item.reviewStatus === 'PENDING',
+                  approved: item.reviewStatus === 'APPROVED',
+                  rejected: item.reviewStatus === 'REJECTED'
+                }"
+              >{{ item.reviewStatus }}</span>
+            </div>
+            <p class="title">{{ item.title }}</p>
+            <p class="excerpt">{{ item.authorText || 'Unknown author' }}</p>
+            <p class="admin-muted">{{ item.language || 'N/A' }} · {{ item.createdAt | date:'short' }}</p>
+          </button>
+        }
+      }
+    </aside>
+
+    <main class="review-detail">
+      @if (!selectedItem) {
+        <div class="admin-empty">Select one submission to review.</div>
+      } @else {
+        <section class="detail-block">
+          <div class="detail-meta-grid">
+            <p><span>ID</span>#{{ selectedItem.id }}</p>
+            <p><span>Status</span>{{ selectedItem.reviewStatus }}</p>
+            <p><span>Submitter</span>{{ selectedItem.submitterEmail || ('User ' + selectedItem.submitterUserId) }}</p>
+            <p><span>Source</span>{{ selectedItem.source || 'N/A' }}</p>
+            <p><span>Original Author</span>{{ selectedItem.authorText || 'N/A' }}</p>
+            <p><span>Created</span>{{ selectedItem.createdAt | date:'medium' }}</p>
+          </div>
+
+          @if (selectedItem.coverUrl) {
+            <img [src]="selectedItem.coverUrl" alt="Book cover" class="book-cover" />
+          }
+
+          @if (selectedItem.reviewStatus === 'PENDING') {
+            <div class="book-edit-grid">
+              <label>
+                <span class="admin-muted">Language</span>
+                <select class="admin-select" [(ngModel)]="reviewLanguages[selectedItem.id]">
                   <option value="zh">zh</option>
                   <option value="en">en</option>
                 </select>
+              </label>
+              <label>
+                <span class="admin-muted">Translator</span>
+                <input class="admin-input" [(ngModel)]="reviewTranslatorTexts[selectedItem.id]" placeholder="Translator" />
+              </label>
+              <label>
+                <span class="admin-muted">ISBN-13</span>
+                <input class="admin-input" [(ngModel)]="reviewIsbn13[selectedItem.id]" placeholder="ISBN-13" />
+              </label>
+              <label>
+                <span class="admin-muted">ISBN-10</span>
+                <input class="admin-input" [(ngModel)]="reviewIsbn10[selectedItem.id]" placeholder="ISBN-10" />
+              </label>
+            </div>
+
+            <section class="author-section">
+              <h3>Author Matching</h3>
+              @if ((reviewAuthors[selectedItem.id] || []).length === 0) {
+                <p class="admin-muted">No author tokens parsed from original text.</p>
               } @else {
-                <span>{{ item.language || '-' }}</span>
-              }
-            </td>
-            <td>
-              @if (item.reviewStatus === 'PENDING') {
-                <div>
-                  <input
-                    [(ngModel)]="reviewIsbn13[item.id]"
-                    [disabled]="submitting"
-                    placeholder="ISBN-13"
-                  />
+                <div class="author-list">
+                  @for (author of reviewAuthors[selectedItem.id]; track author.name) {
+                    <article class="author-item">
+                      <div class="row">
+                        <strong>{{ author.name }}</strong>
+                        <button class="admin-button" (click)="refreshAuthorCandidates(selectedItem.id, author)">
+                          {{ author.loading ? 'Refreshing...' : 'Refresh candidates' }}
+                        </button>
+                      </div>
+
+                      <div class="author-controls">
+                        <label>
+                          <input
+                            type="radio"
+                            [name]="'decision_' + selectedItem.id + '_' + author.name"
+                            [checked]="author.decision === 'NEW'"
+                            (change)="author.decision = 'NEW'; onAuthorDecisionChange(author)"
+                          />
+                          New author
+                        </label>
+
+                        @if (hasAuthorCandidates(author)) {
+                          <label>
+                            <input
+                              type="radio"
+                              [name]="'decision_' + selectedItem.id + '_' + author.name"
+                              [checked]="author.decision === 'EXISTING'"
+                              (change)="author.decision = 'EXISTING'; onAuthorDecisionChange(author)"
+                            />
+                            Match existing
+                          </label>
+                        }
+                      </div>
+
+                      @if (author.decision === 'EXISTING') {
+                        <select class="admin-select" [(ngModel)]="author.selectedPersonId">
+                          @for (candidate of author.candidates; track candidate.personId) {
+                            <option [ngValue]="candidate.personId">
+                              {{ candidate.displayName }} ({{ candidate.personId }})
+                            </option>
+                          }
+                        </select>
+                      }
+
+                      @if (author.error) {
+                        <p class="admin-alert error">{{ author.error }}</p>
+                      }
+                    </article>
+                  }
                 </div>
-                <div>
-                  <input
-                    [(ngModel)]="reviewIsbn10[item.id]"
-                    [disabled]="submitting"
-                    placeholder="ISBN-10"
-                  />
-                </div>
-              } @else {
-                <span>{{ item.isbn13 || item.isbn10 || '-' }}</span>
               }
-            </td>
-            <td>{{ item.submitterEmail || '-' }}</td>
-            <td>{{ item.submitterUserId }}</td>
-            <td class="action-cell">
-              <input
-                [(ngModel)]="reviewNotes[item.id]"
-                [disabled]="item.reviewStatus !== 'PENDING' || submitting"
-                placeholder="Review note (optional)"
-              />
-              @if (item.reviewStatus === 'PENDING') {
-                <button type="button" [disabled]="submitting" (click)="approve(item)">Approve</button>
-                <button
-                  type="button"
-                  class="danger"
-                  [disabled]="submitting"
-                  (click)="reject(item)"
-                >
-                  Reject
-                </button>
-              } @else {
-                <span>-</span>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  }
-</section>
+            </section>
+
+            <label class="detail-label">Review Note</label>
+            <textarea
+              class="admin-textarea"
+              rows="4"
+              [(ngModel)]="reviewNotes[selectedItem.id]"
+              placeholder="Write review note..."
+            ></textarea>
+
+            <div class="detail-actions">
+              <button class="admin-button primary" [disabled]="submitting" (click)="approve(selectedItem)">Approve</button>
+              <button class="admin-button ghost-danger" [disabled]="submitting" (click)="reject(selectedItem)">Reject</button>
+            </div>
+          } @else {
+            <p class="admin-muted">
+              This submission is {{ selectedItem.reviewStatus }} at
+              {{ selectedItem.reviewedAt | date:'medium' }}.
+            </p>
+            @if (selectedItem.reviewNote) {
+              <article class="detail-article">{{ selectedItem.reviewNote }}</article>
+            }
+          }
+        </section>
+      }
+    </main>
+  </section>
+</div>

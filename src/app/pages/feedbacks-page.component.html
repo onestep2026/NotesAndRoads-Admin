@@ -1,51 +1,87 @@
-<section class="panel">
-  <div class="panel-head">
-    <h2>Feedback Inbox</h2>
-    <div class="toolbar">
-      <select [(ngModel)]="selectedStatus" (change)="reload()">
-        @for (status of statusOptions; track status) {
-          <option [ngValue]="status">{{ status || 'ALL' }}</option>
-        }
-      </select>
-      <button type="button" (click)="reload()">Refresh</button>
+<div class="review-page">
+  <header class="review-page-header">
+    <div>
+      <h2>Feedback Queue</h2>
+      <p class="admin-muted">{{ total }} items · prioritize OPEN first</p>
     </div>
-  </div>
+    <div class="admin-pill-group">
+      @for (status of statusOptions; track status) {
+        <button
+          class="admin-pill"
+          [class.is-active]="selectedStatus === status"
+          (click)="selectedStatus = status; reload()"
+        >
+          {{ status || 'ALL' }}
+        </button>
+      }
+    </div>
+  </header>
 
   @if (error) {
-    <p class="error">{{ error }}</p>
+    <div class="admin-alert error">{{ error }}</div>
+  }
+  @if (success) {
+    <div class="admin-alert success">{{ success }}</div>
   }
 
-  @if (loading) {
-    <p>Loading feedback...</p>
-  } @else {
-    <p class="meta">Total: {{ total }}</p>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Status</th>
-          <th>Category</th>
-          <th>User</th>
-          <th>Follow Up</th>
-          <th>Contact Email</th>
-          <th>Preview</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (item of feedbackItems; track item.id) {
-          <tr [routerLink]="['/feedback', item.id]">
-            <td>{{ item.id }}</td>
-            <td>{{ item.status }}</td>
-            <td>{{ item.category }}</td>
-            <td>{{ item.userId }}</td>
-            <td>{{ item.allowFollowUp ? 'YES' : 'NO' }}</td>
-            <td>{{ item.contactEmail || '-' }}</td>
-            <td>{{ preview(item.content) }}</td>
-            <td>{{ item.createdAt || '-' }}</td>
-          </tr>
+  <section class="review-split">
+    <aside class="review-list">
+      @if (loading) {
+        <div class="admin-empty">Loading feedback...</div>
+      } @else if (feedbacks.length === 0) {
+        <div class="admin-empty">No feedback under this filter.</div>
+      } @else {
+        @for (fb of feedbacks; track fb.id) {
+          <button class="review-list-item" [class.selected]="selectedFeedback?.id === fb.id" (click)="selectFeedback(fb)">
+            <div class="row">
+              <strong>#{{ fb.id }}</strong>
+              <span class="admin-badge"
+                [ngClass]="{
+                  open: fb.status === 'OPEN',
+                  'in-review': fb.status === 'IN_REVIEW',
+                  closed: fb.status === 'CLOSED'
+                }"
+              >{{ fb.status }}</span>
+            </div>
+            <p class="title">{{ fb.category || 'Uncategorized' }}</p>
+            <p class="excerpt">{{ fb.content }}</p>
+            <p class="admin-muted">User {{ fb.userId }} · {{ fb.createdAt | date:'short' }}</p>
+          </button>
         }
-      </tbody>
-    </table>
-  }
-</section>
+      }
+    </aside>
+
+    <main class="review-detail">
+      @if (!selectedFeedback) {
+        <div class="admin-empty">Select one feedback to review.</div>
+      } @else {
+        <section class="detail-block">
+          <div class="detail-meta-grid">
+            <p><span>ID</span>#{{ selectedFeedback.id }}</p>
+            <p><span>Status</span>{{ selectedFeedback.status }}</p>
+            <p><span>User</span>{{ selectedFeedback.userId }}</p>
+            <p><span>Submitted</span>{{ selectedFeedback.createdAt | date:'medium' }}</p>
+            <p><span>Contact</span>{{ selectedFeedback.contactEmail || 'N/A' }}</p>
+            <p><span>Follow-up</span>{{ selectedFeedback.allowFollowUp ? 'Allowed' : 'Not allowed' }}</p>
+          </div>
+
+          <h3>Feedback Content</h3>
+          <article class="detail-article">{{ selectedFeedback.content }}</article>
+
+          <label class="detail-label">Review Note</label>
+          <textarea
+            class="admin-textarea"
+            rows="5"
+            [(ngModel)]="reviewNote"
+            placeholder="Write internal note..."
+          ></textarea>
+
+          <div class="detail-actions">
+            <button class="admin-button" [disabled]="submitting" (click)="updateStatus('IN_REVIEW')">Mark In Review</button>
+            <button class="admin-button primary" [disabled]="submitting" (click)="updateStatus('CLOSED')">Close</button>
+          </div>
+        </section>
+      }
+    </main>
+  </section>
+</div>

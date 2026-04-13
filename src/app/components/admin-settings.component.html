@@ -1,19 +1,22 @@
-<section class="settings-card">
-  <h2>API Settings</h2>
-  <div class="settings-grid">
-    <label>
-      <span>Backend Base URL</span>
-      <input [(ngModel)]="baseUrl" placeholder="http://106.15.42.189" />
-    </label>
-    <button type="button" (click)="save()">Save Base URL</button>
-    @if (isLoggedIn) {
-      <button type="button" class="secondary" (click)="logout()">Logout</button>
-    }
-  </div>
+<div class="settings-wrap">
+  <button (click)="toggle()" class="settings-trigger" aria-label="Admin settings">
+    <span class="status-dot" [class.offline]="!isLoggedIn"></span>
+    <span class="trigger-main">
+      <strong>{{ currentEmail }}</strong>
+      <small>{{ currentEnvironment }}</small>
+    </span>
+  </button>
 
-  @if (isLoggedIn) {
-    <p class="message success">Status: Logged in</p>
-  } @else {
-    <p class="message">Status: Not logged in</p>
+  @if (isOpen) {
+    <div class="settings-panel">
+      <label for="baseUrl">API Base URL</label>
+      <input id="baseUrl" type="text" [(ngModel)]="baseUrl" class="admin-input" placeholder="http://localhost:9999" />
+
+      <div class="settings-actions">
+        <button (click)="save()" class="admin-button primary">Save</button>
+        <button (click)="logout()" class="admin-button ghost-danger">Logout</button>
+      </div>
+    </div>
+    <button class="settings-backdrop" (click)="toggle()" aria-label="Close settings"></button>
   }
-</section>
+</div>

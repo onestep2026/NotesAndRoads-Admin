@@ -38,6 +38,7 @@ export class BookSubmissionsPageComponent {
   error = '';
   success = '';
   items: BookSubmissionResp[] = [];
+  selectedItem: BookSubmissionResp | null = null;
   total = 0;
   page = 0;
   size = 20;
@@ -58,7 +59,14 @@ export class BookSubmissionsPageComponent {
     this.reload();
   }
 
+  selectItem(item: BookSubmissionResp): void {
+    this.selectedItem = item;
+    this.ensureAuthorStates(item);
+    this.cdr.detectChanges();
+  }
+
   reload(): void {
+    const previousSelectedId = this.selectedItem?.id ?? null;
     this.loading = true;
     this.error = '';
     this.success = '';
@@ -75,6 +83,14 @@ export class BookSubmissionsPageComponent {
         next: (res) => {
           this.items = res.items;
           this.total = res.page.totalElements;
+          if (this.items.length === 0) {
+            this.selectedItem = null;
+          } else {
+            const matched = previousSelectedId
+              ? this.items.find((item) => item.id === previousSelectedId)
+              : null;
+            this.selectItem(matched ?? this.items[0]);
+          }
           for (const item of res.items) {
             if (!(item.id in this.reviewTranslatorTexts)) {
               this.reviewTranslatorTexts[item.id] = item.translatorText ?? '';
@@ -89,7 +105,6 @@ export class BookSubmissionsPageComponent {
               const lang = (item.language || '').toLowerCase();
               this.reviewLanguages[item.id] = lang === 'en' ? 'en' : 'zh';
             }
-            this.ensureAuthorStates(item);
           }
           this.cdr.detectChanges();
         },

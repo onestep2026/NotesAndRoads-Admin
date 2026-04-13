@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Librarian Terminal | Governance &amp; Moderation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-primary": "#a1d2ad",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#f8ba00",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#414942",
+                    "secondary-fixed-dim": "#b8ccba",
+                    "secondary-fixed": "#d3e8d5",
+                    "error-container": "#ffdad6",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "tertiary": "#4c3600",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-container": "#9ed0ab",
+                    "on-primary-fixed-variant": "#224f33",
+                    "primary-fixed-dim": "#a1d2ad",
+                    "primary-container": "#2d5a3d",
+                    "on-background": "#1c1c19",
+                    "surface-tint": "#3b684a",
+                    "primary": "#144227",
+                    "surface-container-high": "#ebe8e3",
+                    "inverse-on-surface": "#f3f0eb",
+                    "tertiary-container": "#684c00",
+                    "on-surface": "#1c1c19",
+                    "outline": "#717971",
+                    "on-secondary-container": "#56695a",
+                    "on-primary-fixed": "#00210f",
+                    "tertiary-fixed": "#ffdfa0",
+                    "background": "#fcf9f4",
+                    "on-secondary-fixed": "#0e1f14",
+                    "surface-variant": "#e5e2dd",
+                    "surface-container": "#f0ede9",
+                    "surface-bright": "#fcf9f4",
+                    "primary-fixed": "#bceec8",
+                    "surface": "#fcf9f4",
+                    "outline-variant": "#c1c9c0",
+                    "surface-dim": "#dcdad5",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#394b3d",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#516354",
+                    "surface-container-highest": "#e5e2dd",
+                    "on-tertiary-fixed-variant": "#5c4300",
+                    "surface-container-low": "#f6f3ee",
+                    "inverse-surface": "#31302d",
+                    "secondary-container": "#d3e8d5",
+                    "tertiary-fixed-dim": "#fbbc00",
+                    "on-tertiary-fixed": "#261a00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Newsreader", "serif"],
+                    "body": ["Inter", "sans-serif"],
+                    "label": ["Inter", "sans-serif"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .transition-library {
+            transition: all 400ms cubic-bezier(0.2, 0, 0, 1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+<!-- SideNavBar (JSON Derived) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col h-screen w-64 bg-[#f6f3ee] dark:bg-stone-900 transition-library z-50">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<img alt="Logo" class="w-8 h-8 rounded-lg shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPJfMr8jKcGJTzzzlUPiNq24B7nuPG7gUzDhipwXDIDp9UPedbnpxuh1Ep3Dlbx-DyhHH0qZWK5CAvL6EJ-8ZRfJxOgsTIIH_E98rnWgsUqZtCmYpn7o1Sq9s7roirW85ZTUavCxTcBCmKZIFi6JyMOBMIWFj_5ILmEyKT15y-sS6YZu_jZvvaIIrA6MkFBjxfQoS79aII7k-Vq0YiMQzrz8xHEY4tLzt3NU3cM6nkzXLUT4LV8HRqvhwUJF12e3L_xu9klamC7yip"/>
+<div>
+<h1 class="text-xl font-serif italic text-[#144227] dark:text-[#bceec8] leading-none">NotesAndRoads</h1>
+<p class="text-[10px] uppercase tracking-widest text-stone-500 font-bold mt-1">Librarian Terminal</p>
+</div>
+</div>
+<button class="w-full bg-primary-container text-on-primary py-3 px-4 rounded-xl flex items-center justify-center gap-2 mb-8 transition-library hover:shadow-lg">
+<span class="material-symbols-outlined text-[18px]">security</span>
+<span class="text-sm font-semibold tracking-tight">New Enforcement</span>
+</button>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-library rounded-lg" href="#">
+<span class="material-symbols-outlined">feedback</span>
+<span class="text-sm">Feedback</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-library rounded-lg" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="text-sm">Reports</span>
+</a>
+<!-- Active Item: Moderation (Contextual Logic) -->
+<a class="flex items-center gap-3 px-4 py-3 text-[#144227] dark:text-[#bceec8] font-bold border-l-4 border-[#144227] dark:border-[#bceec8] bg-[#f0ede9] dark:bg-stone-800 transition-library" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="text-sm">Moderation</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-library rounded-lg" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="text-sm">Enforcements</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-library rounded-lg" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="text-sm">Book Catalog</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-stone-500 dark:text-stone-400 font-medium hover:bg-[#f0ede9] dark:hover:bg-stone-800 transition-library rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm">System</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-6 space-y-4">
+<div class="flex items-center gap-3 px-4 py-2">
+<img alt="Admin User Avatar" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="close-up portrait of a professional man in a beige turtleneck sweater with scholarly expression and warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8JJfexhBby2za6O6cj3Byg79frSe0m0BNJf6qAlfLpWE__Ay18JP_ZMmtPnkdG8xx0MhTBq0X6OmcoVIOBpBYJsnlkYwKtCH0OtEzV_LYwTu3ecSEuUb8pN5Wea_8NfVY5Fdup7v8ZsdHLj7GCWa2CFhiT4JgcPPUr32Fj8ye3Ridv6Xd_lvY6AOL3vBt1kZGParDCuWc6mR4AklLe5Y8rzGk8ddf9pVuFszwkVTIjMv24T-CCDnenLgk-GJ3vLqujcY3CbLhzJwo"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold text-on-surface truncate">Admin User</p>
+<p class="text-[10px] text-stone-500 truncate">Senior Curator</p>
+</div>
+</div>
+<div class="border-t border-stone-200/50 dark:border-stone-800/50 pt-4">
+<a class="flex items-center gap-3 px-4 py-2 text-stone-500 dark:text-stone-400 text-xs font-medium hover:text-primary transition-library" href="#">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-stone-500 dark:text-stone-400 text-xs font-medium hover:text-error transition-library" href="#">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+<span>Log Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (JSON Derived) -->
+<header class="fixed left-64 top-0 right-0 h-16 bg-[#fcf9f4]/80 dark:bg-stone-950/80 backdrop-blur-xl flex justify-between items-center px-8 z-40 transition-library">
+<div class="flex items-center gap-4 w-1/3">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[20px]">search</span>
+<input class="w-full bg-surface-container border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-1 focus:ring-primary-container transition-library" placeholder="Search moderation queue..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-stone-600 hover:text-[#2d5a3d] transition-library relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-stone-600 hover:text-[#2d5a3d] transition-library">
+<span class="material-symbols-outlined">history</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-primary tracking-tight">Administrator</span>
+<img alt="Administrator" class="w-8 h-8 rounded-full" data-alt="professional profile headshot of a woman in a library setting with soft warm light and intellectual look" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8rdmfK7T0PgrJnD4BTyLkIGY3FpMwZw9zPrESoxqBXS3z6FWz-qptLFwgn_JGU0bQJdCkrDnO1umw3El9-PaKlgEvjz2Ctnz8dqBFV67e88C93-giLSxvm1rPeqI3ShO1N24PgA5ddQhslmC7y_GaJ_m-nf-xyKbRRG9msSLc6Vxpy9kUa9eo3vZC2_r9mb2bqRuilxz1BMweafW4zFgMUZV2mVb-wZVFGeY425nAWzDzB73DKXQl0j5NN_K9d0T3vFHmcDjFUDiM"/>
+</div>
+</div>
+</header>
+<!-- Main Content: Three-Pane Layout -->
+<main class="ml-64 pt-16 h-screen flex">
+<!-- Pane 1: Feed of Report Cards -->
+<section class="w-80 bg-surface-container-low flex flex-col h-full border-r border-stone-200/50">
+<div class="p-6 pb-2">
+<h2 class="font-headline text-2xl text-on-surface mb-1">Queue</h2>
+<div class="flex items-center justify-between text-[10px] font-bold text-stone-500 tracking-wider">
+<span>24 ACTIVE REPORTS</span>
+<span class="text-primary cursor-pointer hover:underline">NEWEST FIRST</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto scrollbar-hide px-4 py-2 space-y-4">
+<!-- Card 1: Active -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-[0_4px_12px_rgba(28,28,25,0.04)] border-l-4 border-primary transition-library hover:translate-x-1 cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed-dim text-on-tertiary-fixed text-[9px] font-bold tracking-widest">PENDING</span>
+<span class="text-[10px] text-stone-400 font-medium">14m ago</span>
+</div>
+<h3 class="text-sm font-bold text-on-surface mb-1 truncate">Hate Speech Violation</h3>
+<p class="text-xs text-stone-500 line-clamp-2 italic">"The context of the discussion was regarding historical accuracy but shifted towards..."</p>
+<div class="mt-3 flex items-center gap-2">
+<img class="w-4 h-4 rounded-full" data-alt="avatar of a young male user with neutral expression studio lighting white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUAfgEF8SwPSmEeQAkU1bSg4L-XNdpWr6qK8WhVqn2fx-QfRiRyxnAuS2u7xKwZ6_GYHoxKyOAF1Dku8UVqCbYFQmjSLye2e5gK8vf8cH4WuSJxE9ZxuWl57xVeesbgTwSbDoA2rtccuAU4yIkl0dKf0KtA3gIxQ_v2aOBQdk0Bu1Bmups1cmQsE6NdSH1eL9bdKYqgiLb_EU67wJZb7eWhJ93knO197YMN_C0E5lHLqHzDP8_ySmn9EB5iWfaQIIppCZEI7gJG2tH"/>
+<span class="text-[10px] font-bold text-stone-600">User: julian_v</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface p-4 rounded-xl border border-transparent transition-library hover:bg-surface-container-high cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[9px] font-bold tracking-widest">RESOLVED</span>
+<span class="text-[10px] text-stone-400 font-medium">2h ago</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface mb-1 truncate">Spam Content</h3>
+<p class="text-xs text-stone-500 line-clamp-2 italic">"Check out this link for unlimited credits and free access to all books..."</p>
+<div class="mt-3 flex items-center gap-2">
+<img class="w-4 h-4 rounded-full" data-alt="avatar of a smiling woman with glasses and professional attire in an office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5VsH0VDS-HLbLQ50RUlR4P3yVj7H89BZVZZBFMsKG4hl2R7S_M5zCSQmJnAJaiMtpspIOZPyS5WuavqaucNsfQyl38Dn1sH17IRimvvkqHeeloGNPKjrvsLGAhBL9X-01FUZQ8EQ7YISW1Vkzc_SosstjykWVd3LoMCtiqzWZUvXGrSiNgol3X6I2vLBCUvWjFVVCcs9N6gdd3PcCO4doX5T14AMC-EMJjd9QvXWDdapE5BjescQXoxc500h2Wjb8HZkuPA6o0b4C"/>
+<span class="text-[10px] font-bold text-stone-600">User: sarah_books</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface p-4 rounded-xl border border-transparent transition-library hover:bg-surface-container-high cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-fixed-dim text-on-tertiary-fixed text-[9px] font-bold tracking-widest">PENDING</span>
+<span class="text-[10px] text-stone-400 font-medium">3h ago</span>
+</div>
+<h3 class="text-sm font-semibold text-on-surface mb-1 truncate">Inappropriate Image</h3>
+<p class="text-xs text-stone-500 line-clamp-2 italic">Flagged by automated system for visual dissonance in the biography section...</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-stone-400">person</span>
+<span class="text-[10px] font-bold text-stone-600">User: anon_789</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Pane 2: Detail Workspace -->
+<section class="flex-1 bg-surface-container-lowest flex flex-col relative overflow-y-auto">
+<div class="p-8 max-w-4xl mx-auto w-full">
+<nav class="flex items-center gap-2 text-xs text-stone-400 font-medium mb-6">
+<span>Reports</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span>Case #RE-90821</span>
+</nav>
+<header class="mb-10">
+<h2 class="font-headline text-4xl text-primary font-bold mb-4">Hate Speech Violation</h2>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-surface-container rounded-full px-3 py-1">
+<span class="material-symbols-outlined text-error text-[18px]">priority_high</span>
+<span class="text-xs font-bold text-on-surface uppercase tracking-tight">High Severity</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<div class="text-xs text-stone-500">Target Object: <span class="font-bold text-on-surface underline">Discussion Thread #1209</span></div>
+</div>
+</header>
+<!-- Content Snippet Section -->
+<div class="space-y-8">
+<div class="bg-surface rounded-2xl p-6 border-b-2 border-primary-fixed">
+<h4 class="text-[10px] font-bold text-stone-400 uppercase tracking-[0.2em] mb-4">Reported Content</h4>
+<div class="flex gap-4">
+<img alt="User Avatar" class="w-12 h-12 rounded-xl shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhWlgqIxtov9RiRtATiIgsHz382p4J8f3fxvMi7yg3x8qp0VmJqbqjsTNLg5RMoCbdxaY6dUsm1FKyVs_lvcJu0yxus_j-UFwjRlFVSEA6K73UbxKjsWK0qMPZFUBLLaxBLYXav9PdmjDkPAg7eX0LKlkdVcQy-UcO92ymmpL2m905QFwKM6i13b2yLtY3-MO6iQ2ukwiZWswfsr7vo5eP0Jdxy6LxgZ-WoPWzJn1x7QqDY-bwtpViSjdA3FI179haVaW9Oa_LgSgY"/>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-bold text-sm">julian_v</span>
+<span class="text-xs text-stone-400">at 14:22:09 PST</span>
+</div>
+<p class="text-stone-700 leading-relaxed font-serif italic text-lg bg-white/50 p-4 rounded-lg">
+                                    "The problem with these specific demographics entering the archival space is that they don't share our collective values of preservation. We should restrict access to the inner sanctums based on heritage audits."
+                                </p>
+</div>
+</div>
+</div>
+<!-- Target User History -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-surface-container-low rounded-2xl p-6">
+<h4 class="text-[10px] font-bold text-stone-400 uppercase tracking-[0.2em] mb-4">User Health Card</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-stone-500">Account Age</span>
+<span class="text-xs font-bold">2.4 Years</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-stone-500">Total Contributions</span>
+<span class="text-xs font-bold">1,402</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs font-medium text-stone-500">Trust Score</span>
+<div class="flex gap-1">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<div class="w-2 h-2 rounded-full bg-stone-300"></div>
+<div class="w-2 h-2 rounded-full bg-stone-300"></div>
+<div class="w-2 h-2 rounded-full bg-stone-300"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-2xl p-6">
+<h4 class="text-[10px] font-bold text-stone-400 uppercase tracking-[0.2em] mb-4">Violation History</h4>
+<ul class="space-y-3">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm mt-0.5">warning</span>
+<div class="text-[11px]">
+<p class="font-bold">Minor Harassment</p>
+<p class="text-stone-500">Nov 12, 2023 • Warning Issued</p>
+</div>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm mt-0.5">warning</span>
+<div class="text-[11px]">
+<p class="font-bold">Misinformation</p>
+<p class="text-stone-500">Aug 05, 2023 • Content Removed</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="h-32"></div> <!-- Spacer for Action Bar -->
+</div>
+</section>
+<!-- Pane 3: Action HUD (Persistent Bottom Bar) -->
+<div class="fixed bottom-0 left-64 right-0 bg-surface/90 backdrop-blur-md border-t border-stone-200/50 p-6 z-30 transition-library shadow-[0_-12px_32px_rgba(28,28,25,0.06)]">
+<div class="max-w-6xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div>
+<p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-1">DECISION CONTEXT</p>
+<p class="text-xs font-semibold text-primary">Case #RE-90821 • High Severity • Hate Speech</p>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/50"></div>
+<div class="flex gap-2">
+<button class="px-5 py-2 rounded-xl text-xs font-bold text-stone-600 bg-surface-container-high hover:bg-stone-200 transition-library">
+                            Add Note
+                        </button>
+<button class="px-5 py-2 rounded-xl text-xs font-bold text-stone-600 bg-surface-container-high hover:bg-stone-200 transition-library">
+                            Assign to Legal
+                        </button>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-3 rounded-xl text-xs font-bold text-stone-600 bg-surface-container-highest hover:text-primary transition-library flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">close</span>
+                        Dismiss
+                    </button>
+<button class="px-6 py-3 rounded-xl text-xs font-bold text-stone-600 bg-surface-container-highest hover:text-primary transition-library flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">pending_actions</span>
+                        In-Review
+                    </button>
+<button class="px-6 py-3 rounded-xl text-xs font-bold text-on-primary bg-primary hover:opacity-90 transition-library flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                        Take-Down
+                    </button>
+<button class="px-6 py-3 rounded-xl text-xs font-bold text-white bg-error hover:opacity-90 transition-library flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">block</span>
+                        Ban User
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

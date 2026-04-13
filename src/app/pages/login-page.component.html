@@ -1,27 +1,31 @@
-<section class="login-card">
-  <h1>知行 Admin Login</h1>
-  <p>Sign in with your account to access Notes And Roads governance console.</p>
+<div class="login-card-v2">
+  <header>
+    <h1>知行 Admin</h1>
+    <p>Sign in to continue moderation work</p>
+  </header>
 
-  <label>
-    <span>Backend Base URL</span>
-    <input [(ngModel)]="baseUrl" placeholder="http://106.15.42.189" />
-  </label>
+  <div class="login-fields">
+    <label>
+      <span>Admin Email</span>
+      <input type="email" [(ngModel)]="email" (keyup.enter)="login()" class="admin-input" placeholder="admin@onestep.com" />
+    </label>
 
-  <label>
-    <span>Email</span>
-    <input [(ngModel)]="email" placeholder="admin@example.com" />
-  </label>
+    <label>
+      <span>Password</span>
+      <input type="password" [(ngModel)]="password" (keyup.enter)="login()" class="admin-input" placeholder="••••••••" />
+    </label>
 
-  <label>
-    <span>Password</span>
-    <input [(ngModel)]="password" type="password" placeholder="password" />
-  </label>
-
-  <button type="button" (click)="login()" [disabled]="loggingIn">
-    {{ loggingIn ? "Logging in..." : "Login" }}
-  </button>
+    <label>
+      <span>Gateway URL</span>
+      <input type="text" [(ngModel)]="baseUrl" class="admin-input" placeholder="http://106.15.42.189" />
+    </label>
+  </div>
 
   @if (error) {
-    <p class="error">{{ error }}</p>
+    <div class="admin-alert error">{{ error }}</div>
   }
-</section>
+
+  <button (click)="login()" [disabled]="loading" class="admin-button primary login-submit">
+    {{ loading ? 'Signing in...' : 'Sign In' }}
+  </button>
+</div>

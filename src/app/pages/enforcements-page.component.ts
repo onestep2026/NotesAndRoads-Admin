@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { finalize, timeout } from 'rxjs/operators';
 import {
   EnforcementResp,
@@ -17,9 +18,8 @@ import {
 })
 export class EnforcementsPageComponent {
   readonly statusOptions: Array<EnforcementStatus | ''> = ['', 'ACTIVE', 'LIFTED', 'EXPIRED'];
-  selectedStatus: EnforcementStatus | '' = '';
-  targetUserIdInput = '';
-  liftReason = '';
+  selectedStatus: EnforcementStatus | '' = 'ACTIVE';
+  targetUserId: number | null = null;
 
   loading = false;
   submitting = false;
@@ -32,24 +32,50 @@ export class EnforcementsPageComponent {
 
   constructor(
     private readonly api: GovernanceApiService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly route: ActivatedRoute
   ) {
-    this.reload();
+    this.route.queryParams.subscribe((params) => {
+      if (params['userId']) {
+        this.targetUserId = Number(params['userId']);
+        this.selectedStatus = '';
+      }
+      this.reload();
+    });
+  }
+
+  lift(item: EnforcementResp): void {
+    const reason = prompt('Reason for lifting this enforcement?');
+    if (!reason) return;
+
+    this.submitting = true;
+    this.error = '';
+    this.success = '';
+    this.api.liftEnforcement(item.id, reason)
+      .pipe(
+        timeout(15000),
+        finalize(() => { this.submitting = false; this.cdr.detectChanges(); })
+      )
+      .subscribe({
+        next: () => {
+          this.success = 'Enforcement lifted.';
+          this.reload();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.error = err?.error?.message || err?.message || 'Failed to lift enforcement.';
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   reload(): void {
     this.loading = true;
     this.error = '';
-    this.success = '';
-    const parsedTargetUserId = this.parseTargetUserId();
-    this.api
-      .listEnforcements(this.selectedStatus, parsedTargetUserId, this.page, this.size)
+    this.api.listEnforcements(this.selectedStatus, this.targetUserId, this.page, this.size)
       .pipe(
         timeout(15000),
-        finalize(() => {
-          this.loading = false;
-          this.cdr.detectChanges();
-        })
+        finalize(() => { this.loading = false; this.cdr.detectChanges(); })
       )
       .subscribe({
         next: (res) => {
@@ -62,43 +88,5 @@ export class EnforcementsPageComponent {
           this.cdr.detectChanges();
         }
       });
-  }
-
-  lift(id: string): void {
-    this.submitting = true;
-    this.error = '';
-    this.success = '';
-    this.api
-      .liftEnforcement(id, this.liftReason)
-      .pipe(
-        timeout(15000),
-        finalize(() => {
-          this.submitting = false;
-          this.cdr.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (res) => {
-          this.success = `Enforcement ${res.id} lifted.`;
-          this.reload();
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          this.error = err?.error?.message || err?.message || 'Failed to lift enforcement.';
-          this.cdr.detectChanges();
-        }
-      });
-  }
-
-  private parseTargetUserId(): number | null {
-    const raw = this.targetUserIdInput.trim();
-    if (!raw) {
-      return null;
-    }
-    const value = Number(raw);
-    if (Number.isNaN(value) || value <= 0) {
-      return null;
-    }
-    return value;
   }
 }
